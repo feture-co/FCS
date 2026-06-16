@@ -7,6 +7,7 @@ module.exports = {
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASS || '',
   dialect: 'mysql',
+  dialectModule: require('mysql2'),
   logging: process.env.NODE_ENV === 'development' ? false : false,
   timezone: '+06:00',
   dialectOptions: process.env.DB_SSL === 'true' ? {
