@@ -36,6 +36,31 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/main');
 
 const sessionStore = new SequelizeStore({ db: sequelize });
+
+let isDbInitialized = false;
+async function initDb() {
+  if (isDbInitialized) return;
+  try {
+    await sequelize.authenticate();
+    await sessionStore.sync();
+    await sequelize.sync();
+    isDbInitialized = true;
+    console.log('Database initialized successfully.');
+  } catch (err) {
+    console.error('Database initialization failed:', err);
+    throw err;
+  }
+}
+
+app.use(async (req, res, next) => {
+  try {
+    await initDb();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-session-secret',
   store: sessionStore,
@@ -96,25 +121,11 @@ if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   const port = process.env.PORT || 3000;
   (async () => {
     try {
-      await sequelize.authenticate();
-      await sessionStore.sync();
-      await sequelize.sync();
+      await initDb();
       startDueCron();
       app.listen(port, () => console.log(`Future Co-Operative Socitey (FCS) running at http://localhost:${port}`));
     } catch (e) {
       console.error('Local startup error:', e);
-    }
-  })();
-} else {
-  // Database connection sync for Serverless environment
-  (async () => {
-    try {
-      await sequelize.authenticate();
-      await sessionStore.sync();
-      await sequelize.sync();
-      console.log('Database connected and synchronized in serverless environment.');
-    } catch (e) {
-      console.error('Serverless database sync error:', e);
     }
   })();
 }
