@@ -58,14 +58,11 @@ async function initDb() {
   }
 }
 
-app.use(async (req, res, next) => {
-  try {
-    await initDb();
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+// Warm up database connection asynchronously in production (Vercel) without blocking requests.
+if (isProduction) {
+  initDb().catch(err => console.error('Database warm-up failed:', err));
+}
+
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-session-secret',

@@ -4,21 +4,33 @@ const { Member, Deposit, Due, Investment, Profit, ProfitDistribution, Transactio
 const toNumber = value => Number(value || 0);
 
 async function getFundStats() {
-  const members = await Member.count({ where: { status: 'active' } });
-  const totalShares = await Member.sum('shares', { where: { status: 'active' } }) || 0;
-  const totalDeposit = await Deposit.sum('amount') || 0;
-  const totalDue = await Due.sum('totalDue', {
-    where: {
-      id: {
-        [Op.in]: sequelize.literal('(SELECT MAX(id) FROM dues GROUP BY memberId)')
-      }
-    }
-  }) || 0;
-  const totalInvestment = await Investment.sum('amount', { where: { status: 'active' } }) || 0;
-  const totalProfit = await Profit.sum('amount') || 0;
   const now = new Date();
-  const currentDeposit = await Deposit.sum('amount', { where: { month: now.getMonth() + 1, year: now.getFullYear() } }) || 0;
-  const currentDue = await Due.sum('currentDue', { where: { month: now.getMonth() + 1, year: now.getFullYear() } }) || 0;
+  const [
+    members,
+    totalShares,
+    totalDeposit,
+    totalDue,
+    totalInvestment,
+    totalProfit,
+    currentDeposit,
+    currentDue
+  ] = await Promise.all([
+    Member.count({ where: { status: 'active' } }),
+    Member.sum('shares', { where: { status: 'active' } }).then(val => val || 0),
+    Deposit.sum('amount').then(val => val || 0),
+    Due.sum('totalDue', {
+      where: {
+        id: {
+          [Op.in]: sequelize.literal('(SELECT MAX(id) FROM dues GROUP BY memberId)')
+        }
+      }
+    }).then(val => val || 0),
+    Investment.sum('amount', { where: { status: 'active' } }).then(val => val || 0),
+    Profit.sum('amount').then(val => val || 0),
+    Deposit.sum('amount', { where: { month: now.getMonth() + 1, year: now.getFullYear() } }).then(val => val || 0),
+    Due.sum('currentDue', { where: { month: now.getMonth() + 1, year: now.getFullYear() } }).then(val => val || 0)
+  ]);
+
   return {
     members,
     totalShares,

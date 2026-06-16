@@ -9,15 +9,17 @@ const { generateMonthlyDues, regenerateDuesFrom } = require('../jobs/dueCron');
 const { sendDueReminder, sendDueRemindersToAll } = require('../services/reminderService');
 
 exports.dashboard = async (req, res) => {
-  const stats = await getFundStats();
-  const deposits = await Deposit.findAll({ limit: 12, order: [['year', 'ASC'], ['month', 'ASC']] });
-  const investments = await Investment.findAll({ limit: 12, order: [['investmentDate', 'ASC']] });
-  const profits = await Profit.findAll({ limit: 12, order: [['profitDate', 'ASC']] });
-  const recentTransactions = await Transaction.findAll({
-    limit: 6,
-    include: Member,
-    order: [['transactionDate', 'DESC'], ['id', 'DESC']]
-  });
+  const [stats, deposits, investments, profits, recentTransactions] = await Promise.all([
+    getFundStats(),
+    Deposit.findAll({ limit: 12, order: [['year', 'ASC'], ['month', 'ASC']] }),
+    Investment.findAll({ limit: 12, order: [['investmentDate', 'ASC']] }),
+    Profit.findAll({ limit: 12, order: [['profitDate', 'ASC']] }),
+    Transaction.findAll({
+      limit: 6,
+      include: Member,
+      order: [['transactionDate', 'DESC'], ['id', 'DESC']]
+    })
+  ]);
   res.render('admin/dashboard', { title: 'অ্যাডমিন ড্যাশবোর্ড', stats, deposits, investments, profits, recentTransactions });
 };
 
