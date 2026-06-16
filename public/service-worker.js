@@ -1,6 +1,6 @@
-const CACHE_NAME = 'fcs-pwa-v1';
+const CACHE_NAME = 'fcs-pwa-v2';
 const OFFLINE_URL = '/offline.html';
-const ASSETS = ['/login', OFFLINE_URL, '/css/app.css', '/js/app.js', '/js/pwa.js', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
+const ASSETS = [OFFLINE_URL, '/css/app.css', '/js/app.js', '/js/pwa.js', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
