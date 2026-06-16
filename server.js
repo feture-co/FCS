@@ -43,8 +43,13 @@ async function initDb() {
   if (isDbInitialized) return;
   try {
     await sequelize.authenticate();
-    await sessionStore.sync();
-    await sequelize.sync();
+    // Only run table synchronization in development. In production/serverless,
+    // tables are already created and synced, and calling sync on every cold start
+    // adds massive network overhead (15+ queries) that slows down page loads.
+    if (!isProduction) {
+      await sessionStore.sync();
+      await sequelize.sync();
+    }
     isDbInitialized = true;
     console.log('Database initialized successfully.');
   } catch (err) {
