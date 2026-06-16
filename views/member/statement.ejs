@@ -1,0 +1,131 @@
+<style>
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--outline);
+    border-radius: 10px;
+  }
+  @media print {
+    .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    body { background: white; color: black; }
+    .app-sidebar, .app-topbar, .bottom-nav { display: none !important; }
+    .app-main { margin-left: 0 !important; padding: 0 !important; width: 100% !important; }
+    .panel { border: none !important; box-shadow: none !important; padding: 0 !important; }
+  }
+</style>
+
+<div class="page-heading no-print">
+  <div>
+    <p>তারিখ অনুযায়ী লেনদেনের বিস্তারিত বিবরণ</p>
+    <h1>লেজার স্টেটমেন্ট</h1>
+  </div>
+  <button class="btn btn-outline-primary" onclick="window.print()">
+    <span class="material-symbols-outlined">print</span> প্রিন্ট বিবরণী
+  </button>
+</div>
+
+<!-- Statement Panel -->
+<div class="panel table-panel">
+  <!-- Print Header (Hidden on screen) -->
+  <div class="d-none print-only p-4 mb-4 border-bottom border-2 border-primary">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h1 class="text-primary fw-bold m-0" style="font-size: 24px;">Future Co-Operative Socitey (FCS)</h1>
+        <p class="text-muted m-0" style="font-size: 13px;">হিসাব বিবরণী ও লেজার খতিয়ান</p>
+      </div>
+      <div class="text-end" style="font-size: 13px;">
+        <strong>সদস্য: <%= user.name %></strong><br>
+        <span>তারিখ: <%= new Date().toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive custom-scrollbar">
+    <table class="table data-table align-middle">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>তারিখ</th>
+          <th>বিবরণ ও ধরণ</th>
+          <th class="text-end">ডেবিট (-)</th>
+          <th class="text-end">ক্রেডিট (+)</th>
+          <th class="text-end">ব্যালেন্স</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+          let runningBalance = 0; 
+          let totalDebit = 0;
+          let totalCredit = 0;
+          transactions.forEach(t => { 
+            const credit = Number(t.credit || 0);
+            const debit = Number(t.debit || 0);
+            runningBalance += credit - debit;
+            totalDebit += debit;
+            totalCredit += credit;
+        %>
+          <tr class="hover:bg-light transition-colors">
+            <td>
+              <div class="fw-semibold"><%= t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) : '---' %></div>
+            </td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar-circle" style="width: 30px; height: 30px; font-size: 12px; border-radius: 6px;">
+                  <%= t.type ? t.type.substring(0, 1) : 'লে' %>
+                </div>
+                <div>
+                  <div class="fw-bold"><%= t.description || t.type %></div>
+                  <span class="status-pill <%= debit > 0 ? 'due' : 'paid' %>" style="font-size: 9px; padding: 2px 6px;">
+                    <%= t.type %>
+                  </span>
+                </div>
+              </div>
+            </td>
+            <td class="text-end text-danger fw-semibold"><%= debit > 0 ? money(debit) : '—' %></td>
+            <td class="text-end text-success fw-semibold"><%= credit > 0 ? money(credit) : '—' %></td>
+            <td class="text-end fw-bold text-primary"><%= money(runningBalance) %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Summary Footer -->
+  <div class="p-4 bg-light border-top border-outline-variant">
+    <div class="row g-3 align-items-center justify-content-between">
+      <div class="col-md-6 d-flex gap-4">
+        <div>
+          <small class="text-muted d-block" style="font-size: 11px;">মোট জমা (Credit)</small>
+          <strong class="text-success" style="font-size: 18px;"><%= money(totalCredit) %></strong>
+        </div>
+        <div>
+          <small class="text-muted d-block" style="font-size: 11px;">মোট উত্তোলন (Debit)</small>
+          <strong class="text-danger" style="font-size: 18px;"><%= money(totalDebit) %></strong>
+        </div>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <div class="p-3 rounded-3 bg-primary text-white d-inline-block text-start shadow-sm" style="min-width: 200px;">
+          <small class="d-block opacity-75" style="font-size: 11px;">বর্তমান নিট ব্যালেন্স</small>
+          <strong style="font-size: 20px;"><%= money(runningBalance) %></strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Print Signatures (Hidden on screen) -->
+  <div class="d-none print-only p-5 mt-5">
+    <div class="d-flex justify-content-between align-items-center" style="margin-top: 100px;">
+      <div class="text-center">
+        <div style="border-top: 1px solid black; width: 180px; padding-top: 6px; font-size: 13px;">হিসাবরক্ষকের স্বাক্ষর</div>
+      </div>
+      <div class="text-center">
+        <div style="border-top: 1px solid black; width: 180px; padding-top: 6px; font-size: 13px;">ম্যানেজারের স্বাক্ষর</div>
+      </div>
+    </div>
+    <div class="mt-5 text-center text-muted italic" style="font-size: 11px;">
+      * এটি একটি কম্পিউটার জেনারেটেড বিবরণী, কোনো স্বাক্ষর ছাড়াই বৈধ।
+    </div>
+  </div>
+</div>

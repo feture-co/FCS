@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/due-reminders",
+      "schedule": "0 3 * * 0"
+    },
+    {
+      "path": "/api/cron/monthly-dues",
+      "schedule": "5 0 1 * *"
+    }
+  ]
+}

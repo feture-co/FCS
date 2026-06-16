@@ -1,0 +1,93 @@
+<div class="page-heading">
+  <div>
+    <p>টাকা পাঠানোর পর receipt বা screenshot দিয়ে অনুরোধ পাঠান</p>
+    <h1>জমা অনুরোধ</h1>
+  </div>
+</div>
+
+<div class="stats-grid member-stats mb-4">
+  <div class="stat-card">
+    <div class="stat-icon success"><span class="material-symbols-outlined">calendar_month</span></div>
+    <span>চলতি মাস</span>
+    <strong>জুন <%= bnYear(year) %></strong>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon success"><span class="material-symbols-outlined">payments</span></div>
+    <span>চলতি মাসে জমা</span>
+    <strong><%= money(paidThisMonth) %></strong>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon danger"><span class="material-symbols-outlined">pending_actions</span></div>
+    <span>চলতি মাসের বকেয়া</span>
+    <strong><%= money(due ? due.totalDue : member.monthlyDeposit) %></strong>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon success"><span class="material-symbols-outlined">hourglass_top</span></div>
+    <span>Pending Request</span>
+    <strong><%= money(pendingThisMonth) %></strong>
+  </div>
+</div>
+
+<form method="post" action="/member/deposits?_csrf=<%= csrfToken %>" enctype="multipart/form-data" class="row g-3 panel mb-4">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+  <input type="hidden" name="month" value="<%= month %>">
+  <input type="hidden" name="year" value="<%= year %>">
+  <div class="col-md-3">
+    <label class="form-label">মাস</label>
+    <input class="form-control" value="জুন <%= bnYear(year) %>" readonly>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">পরিমাণ</label>
+    <input class="form-control" name="amount" type="number" min="1" step="0.01" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">জমার তারিখ</label>
+    <input class="form-control" name="depositDate" type="date" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Receipt/Screenshot</label>
+    <input class="form-control" name="receipt" type="file" accept="image/*" required>
+  </div>
+  <div class="col-12">
+    <label class="form-label">নোট</label>
+    <textarea class="form-control" name="note" placeholder="যেমন: বিকাশ/নগদ transaction ID"></textarea>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary"><span class="material-symbols-outlined">send</span> অনুরোধ পাঠান</button>
+  </div>
+</form>
+
+<div class="panel table-panel mb-4">
+  <div class="p-3 border-bottom"><h2 class="m-0">আমার জমা অনুরোধ</h2></div>
+  <div class="table-responsive">
+    <table class="table data-table align-middle">
+      <thead><tr><th>তারিখ</th><th>মাস</th><th>পরিমাণ</th><th>Receipt</th><th>স্ট্যাটাস</th><th>Admin Note</th></tr></thead>
+      <tbody>
+        <% requests.forEach(r => { %>
+          <tr>
+            <td><%= r.depositDate %></td>
+            <td><%= r.month %>/<%= r.year %></td>
+            <td><%= money(r.amount) %></td>
+            <td><% if (r.receipt) { %><a target="_blank" href="<%= imgUrl(r.receipt) %>">দেখুন</a><% } %></td>
+            <td><span class="status-pill <%= r.status %>"><%= r.status %></span></td>
+            <td><%= r.adminNote || '' %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel table-panel">
+  <div class="p-3 border-bottom"><h2 class="m-0">Approved জমা ইতিহাস</h2></div>
+  <div class="table-responsive">
+    <table class="table data-table align-middle">
+      <thead><tr><th>তারিখ</th><th>মাস</th><th>বছর</th><th>পরিমাণ</th><th>স্ট্যাটাস</th></tr></thead>
+      <tbody>
+        <% deposits.forEach(d => { %>
+          <tr><td><%= d.depositDate %></td><td><%= d.month %></td><td><%= d.year %></td><td><%= money(d.amount) %></td><td><span class="status-pill <%= d.status %>"><%= d.status %></span></td></tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>

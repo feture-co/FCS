@@ -1,0 +1,403 @@
+<div class="page-heading">
+  <div>
+    <p>সদস্যদের নিয়মিত মাসিক সঞ্চয় জমা ট্র্যাকিং</p>
+    <h1>জমা ব্যবস্থাপনা</h1>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDeposit">
+    <span class="material-symbols-outlined">add</span> জমা যোগ করুন
+  </button>
+</div>
+
+<!-- Top Stats Section -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+      </div>
+      <span>মোট জমা</span>
+      <strong><%= money(stats.totalDeposit) %></strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 109, 65, 0.1); color: var(--secondary);"><span class="material-symbols-outlined">calendar_month</span></div>
+      </div>
+      <span>এই মাসের জমা</span>
+      <strong><%= money(stats.thisMonthDeposit) %></strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon danger" style="background: rgba(186, 26, 26, 0.1); color: var(--error);"><span class="material-symbols-outlined">person_alert</span></div>
+      </div>
+      <span>বকেয়া সদস্য</span>
+      <strong><%= bn(stats.overdueCount) %> জন</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Pending Deposit Requests Section -->
+<% if (typeof pendingRequests !== 'undefined' && pendingRequests.length > 0) { %>
+  <div class="panel table-panel mb-4 border border-warning" style="border-left: 5px solid var(--warning) !important;">
+    <div class="p-3 border-bottom bg-warning-subtle bg-opacity-10 d-flex justify-content-between align-items-center">
+      <h2 class="m-0 text-warning d-flex align-items-center gap-2" style="font-size: 18px; font-weight: 800;">
+        <span class="material-symbols-outlined">pending_actions</span> মেম্বারদের পেন্ডিং জমা অনুরোধসমূহ (<%= bn(pendingRequests.length) %>)
+      </h2>
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr style="background-color: var(--surface-low); color: var(--muted);">
+            <th>মেম্বার</th>
+            <th>মাস & বছর</th>
+            <th class="text-end">পরিমাণ</th>
+            <th>জমার তারিখ</th>
+            <th>রিসিট/স্ক্রিনশট</th>
+            <th>মেম্বার নোট</th>
+            <th class="text-center">অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% pendingRequests.forEach(r => { 
+            const monthName = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'][r.month - 1] || r.month;
+          %>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  <% if (r.Member && r.Member.photo) { %>
+                    <img src="<%= imgUrl(r.Member.photo) %>" class="rounded-circle object-cover" style="width: 38px; height: 38px; border: 1px solid var(--outline);" />
+                  <% } else { %>
+                    <div class="avatar-circle" style="width: 38px; height: 38px; font-size: 16px; border-radius: 50%;">
+                      <%= r.Member ? r.Member.name.substring(0, 1) : 'স' %>
+                    </div>
+                  <% } %>
+                  <div>
+                    <strong><%= r.Member ? r.Member.name : 'Unknown Member' %></strong>
+                    <div class="text-muted" style="font-size: 11px;">ID: BF-2026-<%= String(r.Member ? r.Member.id : 0).padStart(3, '0') %></div>
+                  </div>
+                </div>
+              </td>
+              <td><%= monthName %>, <%= bnYear(r.year) %></td>
+              <td class="text-end fw-bold text-primary"><%= money(r.amount) %></td>
+              <td><%= r.depositDate ? new Date(r.depositDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : '---' %></td>
+              <td>
+                <% if (r.receipt) { %>
+                  <a href="<%= imgUrl(r.receipt) %>" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" style="font-size: 11px; padding: 4px 8px;">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">image</span> রিসিট দেখুন
+                  </a>
+                <% } else { %>
+                  <span class="text-muted" style="font-size: 11px;">রিসিট নেই</span>
+                <% } %>
+              </td>
+              <td>
+                <small class="text-muted" style="font-size: 11px; max-width: 150px; display: block; word-break: break-word;"><%= r.note || '---' %></small>
+              </td>
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-1">
+                  <form action="/admin/deposits/requests/<%= r.id %>/approve?_csrf=<%= csrfToken %>" method="post" class="d-inline" onsubmit="return confirm('আপনি কি এই জমার অনুরোধটি অনুমোদন করতে চান?')">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-sm btn-success d-inline-flex align-items-center gap-1" style="font-size: 11px; padding: 4px 8px;">
+                      <span class="material-symbols-outlined" style="font-size: 14px;">check</span> অনুমোদন
+                    </button>
+                  </form>
+                  <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1 btn-reject-request" data-id="<%= r.id %>" style="font-size: 11px; padding: 4px 8px;">
+                    <span class="material-symbols-outlined" style="font-size: 14px;">close</span> প্রত্যাখ্যান
+                  </button>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% } %>
+
+<!-- Filters Bento -->
+<div class="row g-3 panel mb-4">
+  <div class="col-md-4">
+    <label class="form-label">স্ট্যাটাস ফিল্টার</label>
+    <select class="form-select" id="statusFilter">
+      <option value="">সকল জমা</option>
+      <option value="paid">Paid</option>
+      <option value="partial">Partial</option>
+      <option value="due">Due</option>
+    </select>
+  </div>
+  <div class="col-md-8 d-flex align-items-end">
+    <div class="input-icon w-100" style="position: relative;">
+      <span class="material-symbols-outlined" style="position: absolute; left: 12px; bottom: 12px; color: var(--muted);">search</span>
+      <input class="form-control" style="padding-left: 40px;" id="searchInput" placeholder="সদস্যের নাম বা আইডি দিয়ে খুঁজুন..." type="text"/>
+    </div>
+  </div>
+</div>
+
+<!-- Premium Table Section -->
+<div class="panel table-panel">
+  <div class="table-responsive">
+    <table class="table data-table align-middle" id="depositsTable">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>সদস্য</th>
+          <th>মাস</th>
+          <th>বছর</th>
+          <th class="text-end">পরিমাণ</th>
+          <th>জমার তারিখ</th>
+          <th>স্ট্যাটাস</th>
+          <th class="text-center">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% deposits.forEach(d => { %>
+          <tr data-status="<%= d.status %>">
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <% if (d.Member && d.Member.photo) { %>
+                  <img src="<%= imgUrl(d.Member.photo) %>" class="rounded-circle object-cover" style="width: 38px; height: 38px; border: 1px solid var(--outline);" />
+                <% } else { %>
+                  <div class="avatar-circle" style="width: 38px; height: 38px; font-size: 16px; border-radius: 50%;">
+                    <%= d.Member ? d.Member.name.substring(0, 1) : 'স' %>
+                  </div>
+                <% } %>
+                <div>
+                  <strong><%= d.Member ? d.Member.name : 'Unknown Member' %></strong>
+                  <div class="text-muted" style="font-size: 11px;">ID: BF-2026-<%= String(d.Member ? d.Member.id : 0).padStart(3, '0') %></div>
+                </div>
+              </div>
+            </td>
+            <td><%= ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'][d.month - 1] || d.month %></td>
+            <td><%= bnYear(d.year) %></td>
+            <td class="text-end fw-bold text-primary"><%= money(d.amount) %></td>
+            <td><%= d.depositDate ? new Date(d.depositDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : '---' %></td>
+            <td>
+              <span class="status-pill <%= d.status %>">
+                <%= d.status === 'paid' ? 'Paid' : d.status === 'partial' ? 'Partial' : 'Due' %>
+              </span>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-primary btn-edit-deposit"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#editDeposit" 
+                      data-id="<%= d.id %>"
+                      data-memberid="<%= d.memberId %>"
+                      data-month="<%= d.month %>"
+                      data-year="<%= d.year %>"
+                      data-amount="<%= d.amount %>"
+                      data-date="<%= d.depositDate %>"
+                      data-note="<%= d.note %>"
+                      style="font-size: 12px; padding: 4px 8px;">
+                Edit
+              </button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Deposit Modal -->
+<div class="modal fade" id="addDeposit" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" method="post" action="/admin/deposits?_csrf=<%= csrfToken %>">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">নতুন জমা যোগ করুন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">সদস্য নির্বাচন করুন</label>
+          <select class="form-select" name="memberId" required>
+            <option value="">সদস্য বাছাই করুন</option>
+            <% members.forEach(m => { %>
+              <option value="<%= m.id %>"><%= m.name %> (BF-2026-<%= String(m.id).padStart(3, '0') %>)</option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label">মাস</label>
+            <select class="form-select" name="month" required>
+              <% ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'].forEach((mName, index) => { %>
+                <option value="<%= index + 1 %>" <%= (index + 1) === (new Date().getMonth() + 1) ? 'selected' : '' %>><%= mName %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">বছর</label>
+            <select class="form-select" name="year" required>
+              <% for(let y = new Date().getFullYear() - 2; y <= new Date().getFullYear() + 2; y++) { %>
+                <option value="<%= y %>" <%= y === new Date().getFullYear() ? 'selected' : '' %>><%= y %></option>
+              <% } %>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">জমার পরিমাণ (৳)</label>
+          <input class="form-control" name="amount" type="number" placeholder="৫০০০" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">জমার তারিখ</label>
+          <input class="form-control" name="depositDate" type="date" required value="<%= new Date().toISOString().substring(0, 10) %>">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">নোট (ঐচ্ছিক)</label>
+          <textarea class="form-control" name="note" placeholder="কোনো বিশেষ মন্তব্য থাকলে লিখুন..." rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-primary">নিশ্চিত করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Deposit Modal -->
+<div class="modal fade" id="editDeposit" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="editDepositForm" method="post" action="">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">জমা তথ্য সংশোধন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">সদস্য নির্বাচন করুন</label>
+          <select class="form-select" name="memberId" id="editMemberId" required>
+            <option value="">সদস্য বাছাই করুন</option>
+            <% members.forEach(m => { %>
+              <option value="<%= m.id %>"><%= m.name %> (BF-2026-<%= String(m.id).padStart(3, '0') %>)</option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label">মাস</label>
+            <select class="form-select" name="month" id="editMonth" required>
+              <% ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'].forEach((mName, index) => { %>
+                <option value="<%= index + 1 %>"><%= mName %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">বছর</label>
+            <select class="form-select" name="year" id="editYear" required>
+              <% for(let y = new Date().getFullYear() - 2; y <= new Date().getFullYear() + 2; y++) { %>
+                <option value="<%= y %>"><%= y %></option>
+              <% } %>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">জমার পরিমাণ (৳)</label>
+          <input class="form-control" name="amount" id="editAmount" type="number" placeholder="৫০০০" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">জমার তারিখ</label>
+          <input class="form-control" name="depositDate" id="editDepositDate" type="date" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">নোট (ঐচ্ছিক)</label>
+          <textarea class="form-control" name="note" id="editNote" placeholder="কোনো বিশেষ মন্তব্য থাকলে লিখুন..." rows="2"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-success">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#depositsTable tbody tr');
+
+    function filterTable() {
+      const statusVal = statusFilter.value.toLowerCase();
+      const searchVal = searchInput.value.toLowerCase().trim();
+
+      tableRows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status').toLowerCase();
+        const textContent = row.textContent.toLowerCase();
+
+        let show = true;
+        if (statusVal && rowStatus !== statusVal) show = false;
+        if (searchVal && !textContent.includes(searchVal)) show = false;
+
+        row.style.display = show ? '' : 'none';
+      });
+    }
+
+    statusFilter.addEventListener('change', filterTable);
+    searchInput.addEventListener('input', filterTable);
+
+    // Edit deposit button click handler to populate Edit Modal
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-edit-deposit');
+      if (!btn) return;
+
+      const data = btn.dataset;
+      const form = document.getElementById('editDepositForm');
+      const csrfToken = form.querySelector('input[name="_csrf"]').value;
+      
+      form.action = `/admin/deposits/${data.id}?_csrf=${csrfToken}`;
+
+      document.getElementById('editMemberId').value = data.memberid || '';
+      document.getElementById('editMonth').value = data.month || '';
+      document.getElementById('editYear').value = data.year || '';
+      document.getElementById('editAmount').value = data.amount || '';
+      document.getElementById('editDepositDate').value = data.date || '';
+      document.getElementById('editNote').value = data.note || '';
+    });
+
+    // Reject request trigger
+    document.querySelectorAll('.btn-reject-request').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        Swal.fire({
+          title: 'অনুরোধ প্রত্যাখ্যান করুন',
+          text: 'প্রत्याখ্যান করার কারণ লিখুন:',
+          input: 'text',
+          inputPlaceholder: 'যেমন: রিসিট সঠিক নয় / রিসিট পাওয়া যায়নি',
+          showCancelButton: true,
+          confirmButtonText: 'নিশ্চিত করুন',
+          cancelButtonText: 'বাতিল',
+          confirmButtonColor: '#ba1a1a',
+          preConfirm: (note) => {
+            return note || 'প্রत्याখ্যাত';
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'post';
+            form.action = `/admin/deposits/requests/${id}/reject?_csrf=<%= csrfToken %>`;
+            
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_csrf';
+            csrfInput.value = '<%= csrfToken %>';
+            form.appendChild(csrfInput);
+
+            const noteInput = document.createElement('input');
+            noteInput.type = 'hidden';
+            noteInput.name = 'adminNote';
+            noteInput.value = result.value;
+            form.appendChild(noteInput);
+
+            document.body.appendChild(form);
+            form.submit();
+          }
+        });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,378 @@
+<div class="page-heading">
+  <div>
+    <p>আপনার সদস্য তথ্য ও ব্যক্তিগত সেটিংস</p>
+    <h1>আমার প্রোফাইল ও সেটিংস</h1>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Profile Card (Left Column) -->
+  <div class="col-lg-5">
+    <div class="panel h-100 p-4 relative overflow-hidden">
+      <div class="d-flex flex-column align-items-center text-center mb-4">
+        <div class="position-relative mb-3" style="width: 120px; height: 120px; margin: 0 auto;">
+          <% if (member.photo) { %>
+            <img src="<%= imgUrl(member.photo) %>" id="profileImageDisplay" class="rounded-circle object-cover border border-primary border-4 p-1" style="width: 120px; height: 120px;" />
+          <% } else { %>
+            <div id="profileImageDisplay" class="avatar-circle border border-primary border-4" style="width: 120px; height: 120px; font-size: 54px; font-weight: 900; border-radius: 50%;">
+              <%= member.name.substring(0, 1) %>
+            </div>
+          <% } %>
+          <form action="/member/profile/photo?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data" id="photoUploadForm">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <input type="file" name="photo" id="profilePhotoInput" accept="image/*" class="d-none">
+            <button type="button" onclick="document.getElementById('profilePhotoInput').click()" class="btn btn-sm btn-primary rounded-circle position-absolute d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; right: 0; bottom: 0; padding: 0; border: 2px solid var(--surface-container-lowest); z-index: 10;" title="প্রোফাইল ছবি পরিবর্তন করুন">
+              <span class="material-symbols-outlined" style="font-size: 18px;">add_a_photo</span>
+            </button>
+          </form>
+
+          <!-- Progress Overlay -->
+          <div id="uploadProgressOverlay" class="position-absolute top-0 start-0 w-100 h-100 rounded-circle bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center text-white d-none" style="z-index: 15;">
+            <div class="spinner-border spinner-border-sm text-primary mb-1" role="status" style="width: 1.5rem; height: 1.5rem;"></div>
+            <span id="uploadProgressPercent" class="fw-bold" style="font-size: 12px;">0%</span>
+          </div>
+        </div>
+        <h2 class="font-headline-md text-headline-md font-bold mb-1"><%= member.name %></h2>
+        <span class="status-pill paid px-3 py-1 font-bold" style="font-size: 12px;">প্রিমিয়াম সদস্য</span>
+      </div>
+
+      <div class="space-y-3">
+        <div class="d-flex items-center gap-3 p-2 rounded hover:bg-light transition-colors">
+          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">id_card</span>
+          <div>
+            <small class="text-muted d-block" style="font-size: 11px;">সদস্য আইডি</small>
+            <strong style="font-size: 15px;">BF-2026-<%= String(member.id).padStart(3, '0') %></strong>
+          </div>
+        </div>
+
+        <div class="d-flex items-center gap-3 p-2 rounded hover:bg-light transition-colors">
+          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">call</span>
+          <div>
+            <small class="text-muted d-block" style="font-size: 11px;">মোবাইল নম্বর</small>
+            <strong style="font-size: 15px;"><%= member.mobile %></strong>
+          </div>
+        </div>
+
+        <div class="d-flex items-center gap-3 p-2 rounded hover:bg-light transition-colors">
+          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">mail</span>
+          <div>
+            <small class="text-muted d-block" style="font-size: 11px;">ইমেইল ঠিকানা</small>
+            <strong style="font-size: 15px;"><%= member.email %></strong>
+          </div>
+        </div>
+
+        <div class="d-flex items-center gap-3 p-2 rounded hover:bg-light transition-colors">
+          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">location_on</span>
+          <div>
+            <small class="text-muted d-block" style="font-size: 11px;">বর্তমান ঠিকানা</small>
+            <strong style="font-size: 14px;"><%= member.address || 'কোনো ঠিকানা দেওয়া নেই।' %></strong>
+          </div>
+        </div>
+
+        <div class="d-flex items-center gap-3 p-2 rounded hover:bg-light transition-colors">
+          <span class="material-symbols-outlined text-primary" style="font-size: 24px;">calendar_month</span>
+          <div>
+            <small class="text-muted d-block" style="font-size: 11px;">যোগদানের তারিখ</small>
+            <strong style="font-size: 14px;"><%= member.joinDate ? new Date(member.joinDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : '---' %></strong>
+          </div>
+        </div>
+
+        <div class="row g-2 pt-3 border-top">
+          <div class="col-6">
+            <small class="text-muted d-block" style="font-size: 11px;">মাসিক কিস্তি</small>
+            <strong class="text-primary"><%= money(member.monthlyDeposit) %></strong>
+          </div>
+          <div class="col-6 text-end">
+            <small class="text-muted d-block" style="font-size: 11px;">শেয়ার সংখ্যা</small>
+            <strong class="text-secondary"><%= bn(member.shares) %> টি</strong>
+          </div>
+        </div>
+
+        <% if (pendingDues && pendingDues.length > 0) { 
+          const monthNames = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+          const totalDueAmount = pendingDues[pendingDues.length - 1].totalDue;
+          const startMonth = pendingDues[0];
+          const endMonth = pendingDues[pendingDues.length - 1];
+          const startMonthName = monthNames[startMonth.month - 1];
+          const endMonthName = monthNames[endMonth.month - 1];
+        %>
+          <div class="pt-3 border-top mt-3">
+            <small class="text-danger d-block mb-2 font-bold" style="font-size: 11px; display: flex; align-items: center; gap: 4px;">
+              <span class="material-symbols-outlined" style="font-size: 14px;">warning</span> বকেয়া বিবরণী
+            </small>
+            <div class="d-flex flex-column gap-2">
+              <% if (pendingDues.length === 1) { %>
+                <span class="badge bg-danger-subtle text-danger p-2 w-100 text-start" style="font-size: 12px; font-weight: 600; border-radius: 6px; display: inline-flex; align-items: center; justify-content: space-between;">
+                  <span><%= startMonthName %>, <%= bnYear(startMonth.year) %></span>
+                  <strong><%= money(totalDueAmount) %></strong>
+                </span>
+              <% } else { %>
+                <span class="badge bg-danger-subtle text-danger p-2 w-100" style="font-size: 12px; font-weight: 600; border-radius: 6px; display: inline-flex; align-items: center; justify-content: space-between; white-space: normal; text-align: left;">
+                  <span><%= startMonthName %>, <%= bnYear(startMonth.year) %> - <%= endMonthName %>, <%= bnYear(endMonth.year) %></span>
+                  <strong>মোট: <%= money(totalDueAmount) %></strong>
+                </span>
+              <% } %>
+              
+              <a href="/member/deposits" class="btn btn-outline-danger btn-sm w-100 mt-1" style="border-radius: 8px; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 8px;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">send</span> জমা অনুরোধ পাঠান
+              </a>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="pt-3 border-top mt-3 text-center text-success" style="font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">check_circle</span> আপনার কোনো বকেয়া নেই
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Grid (Right Column) -->
+  <div class="col-lg-7 d-flex flex-column gap-3">
+    <!-- Security & Auth -->
+    <div class="panel p-4">
+      <h3 class="font-title-lg text-title-lg mb-3 fw-bold d-flex align-items-center gap-2" style="font-size: 18px;">
+        <span class="material-symbols-outlined text-primary">security</span> নিরাপত্তা ও অথেন্টিকেশন
+      </h3>
+      <div class="row g-2">
+        <div class="col-sm-6">
+          <button class="btn btn-outline-primary w-100 justify-content-between p-3" onclick="changePasswordAlert()">
+            <span class="d-flex align-items-center gap-2">
+              <span class="material-symbols-outlined">lock_reset</span> পাসওয়ার্ড পরিবর্তন
+            </span>
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+        <div class="col-sm-6">
+          <div class="border rounded-3 p-3 d-flex align-items-center justify-content-between">
+            <span class="d-flex align-items-center gap-2 fw-bold" style="font-size: 14px;">
+              <span class="material-symbols-outlined text-muted">fingerprint</span> বায়োমেট্রিক লগইন
+            </span>
+            <div class="form-check form-switch m-0">
+              <input class="form-check-input" type="checkbox" role="switch" id="biometricSwitch">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- App Preferences -->
+    <div class="panel p-4">
+      <h3 class="font-title-lg text-title-lg mb-3 fw-bold d-flex align-items-center gap-2" style="font-size: 18px;">
+        <span class="material-symbols-outlined text-primary">tune</span> অ্যাপ সেটিংস
+      </h3>
+      <div class="space-y-3">
+        <!-- Dark Mode -->
+        <div class="d-flex align-items-center justify-content-between p-2 rounded hover:bg-light transition-colors">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--surface-high); color: var(--text);">
+              <span class="material-symbols-outlined">dark_mode</span>
+            </div>
+            <div>
+              <p class="m-0 fw-bold" style="font-size: 14px;">ডার্ক মোড</p>
+              <small class="text-muted" style="font-size: 11px;">আপনার চোখের আরামের জন্য ডার্ক থিম ব্যবহার করুন</small>
+            </div>
+          </div>
+          <div class="form-check form-switch m-0">
+            <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch">
+          </div>
+        </div>
+
+        <!-- Notification Preferences -->
+        <div class="d-flex align-items-center justify-content-between p-2 rounded hover:bg-light transition-colors">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--surface-high); color: var(--text);">
+              <span class="material-symbols-outlined">notifications_active</span>
+            </div>
+            <div>
+              <p class="m-0 fw-bold" style="font-size: 14px;">নোটিফিকেশন প্রেফারেন্স</p>
+              <small class="text-muted" style="font-size: 11px;">পেমেন্ট এবং নতুন আপডেট নোটিফিকেশন ম্যানেজ করুন</small>
+            </div>
+          </div>
+          <div class="form-check form-switch m-0">
+            <input class="form-check-input" type="checkbox" role="switch" id="notifSwitch" checked>
+          </div>
+        </div>
+
+        <!-- Privacy settings -->
+        <div class="d-flex align-items-center justify-content-between p-2 rounded hover:bg-light transition-colors">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--surface-high); color: var(--text);">
+              <span class="material-symbols-outlined">privacy_tip</span>
+            </div>
+            <div>
+              <p class="m-0 fw-bold" style="font-size: 14px;">প্রাইভেসি সেটিংস</p>
+              <small class="text-muted" style="font-size: 11px;">অন্যান্য সদস্যদের সাথে আপনার প্রোফাইল বিবরণ প্রদর্শন নিয়ন্ত্রণ করুন</small>
+            </div>
+          </div>
+          <div class="form-check form-switch m-0">
+            <input class="form-check-input" type="checkbox" role="switch" id="privacySwitch" checked>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Log out -->
+    <form action="/logout" method="post" class="w-100">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-danger w-100 p-3" style="border-radius: 16px; font-size: 16px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <span class="material-symbols-outlined">logout</span> লগ আউট করুন
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Ajax Profile Photo Upload with Progress Bar
+    const fileInput = document.getElementById('profilePhotoInput');
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('photo', file);
+
+        const xhr = new XMLHttpRequest();
+        const progressOverlay = document.getElementById('uploadProgressOverlay');
+        const progressPercent = document.getElementById('uploadProgressPercent');
+
+        // Show progress overlay
+        progressOverlay.classList.remove('d-none');
+        progressPercent.textContent = '0%';
+
+        xhr.upload.addEventListener('progress', (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            progressPercent.textContent = percent + '%';
+          }
+        });
+
+        xhr.onload = () => {
+          progressOverlay.classList.add('d-none');
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const res = JSON.parse(xhr.responseText);
+            Swal.fire({
+              title: 'সফল!',
+              text: res.message || 'প্রোফাইল ছবি সফলভাবে আপডেট করা হয়েছে।',
+              icon: 'success',
+              timer: 1500,
+              showConfirmButton: false
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            let errorMsg = 'প্রোফাইল ছবি আপডেট করতে ব্যর্থ হয়েছে।';
+            try {
+              const res = JSON.parse(xhr.responseText);
+              errorMsg = res.message || errorMsg;
+            } catch(e) {}
+            Swal.fire({
+              title: 'ত্রুটি!',
+              text: errorMsg,
+              icon: 'error'
+            });
+          }
+        };
+
+        xhr.onerror = () => {
+          progressOverlay.classList.add('d-none');
+          Swal.fire({
+            title: 'ত্রুটি!',
+            text: 'সার্ভারের সাথে যোগাযোগ করা সম্ভব হয়নি।',
+            icon: 'error'
+          });
+        };
+
+        const csrf = document.querySelector('meta[name="csrf-token"]').content;
+        xhr.open('POST', '/member/profile/photo');
+        xhr.setRequestHeader('CSRF-Token', csrf);
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send(formData);
+      });
+    }
+
+    const darkModeSwitch = document.getElementById('darkModeSwitch');
+    
+    // Check local storage for dark mode theme preference
+    if (localStorage.getItem('theme') === 'dark' || document.documentElement.classList.contains('dark')) {
+      darkModeSwitch.checked = true;
+    }
+
+    darkModeSwitch.addEventListener('change', () => {
+      if (darkModeSwitch.checked) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        Swal.fire({
+          title: 'ডার্ক মোড সক্রিয়',
+          text: 'অ্যাপ থিম ডার্ক মোডে পরিবর্তন করা হয়েছে।',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        Swal.fire({
+          title: 'লাইট মোড সক্রিয়',
+          text: 'অ্যাপ থিম লাইট মোডে পরিবর্তন করা হয়েছে।',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    });
+
+    const biometricSwitch = document.getElementById('biometricSwitch');
+    biometricSwitch.addEventListener('change', () => {
+      Swal.fire({
+        title: biometricSwitch.checked ? 'বায়োমেট্রিক সক্রিয় করা হয়েছে' : 'বায়োমেট্রিক নিষ্ক্রিয় করা হয়েছে',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    });
+
+    const notifSwitch = document.getElementById('notifSwitch');
+    notifSwitch.addEventListener('change', () => {
+      Swal.fire({
+        title: notifSwitch.checked ? 'নোটিফিকেশন অ্যালার্ট চালু' : 'নোটিফিকেশন অ্যালার্ট বন্ধ',
+        icon: 'info',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    });
+  });
+
+  function changePasswordAlert() {
+    Swal.fire({
+      title: 'পাসওয়ার্ড পরিবর্তন করুন',
+      html: `
+        <input type="password" id="oldPassword" class="swal2-input" placeholder="বর্তমান পাসওয়ার্ড">
+        <input type="password" id="newPassword" class="swal2-input" placeholder="নতুন পাসওয়ার্ড">
+        <input type="password" id="confirmPassword" class="swal2-input" placeholder="নতুন পাসওয়ার্ড নিশ্চিত করুন">
+      `,
+      confirmButtonText: 'সংরক্ষণ করুন',
+      focusConfirm: false,
+      showCancelButton: true,
+      cancelButtonText: 'বাতিল',
+      preConfirm: () => {
+        const oldPass = Swal.getPopup().querySelector('#oldPassword').value;
+        const newPass = Swal.getPopup().querySelector('#newPassword').value;
+        const confirmPass = Swal.getPopup().querySelector('#confirmPassword').value;
+        if (!oldPass || !newPass || !confirmPass) {
+          Swal.showValidationMessage(`অনুগ্রহ করে সব ঘর পূরণ করুন`);
+        }
+        if (newPass !== confirmPass) {
+          Swal.showValidationMessage(`নতুন পাসওয়ার্ড দুটি মিলছে না`);
+        }
+        return { oldPass: oldPass, newPass: newPass };
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('সফল!', 'আপনার পাসওয়ার্ড পরিবর্তন সম্পন্ন হয়েছে।', 'success');
+      }
+    });
+  }
+</script>

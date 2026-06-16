@@ -1,0 +1,90 @@
+<div class="page-heading">
+  <div>
+    <p>ফান্ড ও কার্যক্রমের সারসংক্ষেপ</p>
+    <h1>অ্যাডমিন ড্যাশবোর্ড</h1>
+  </div>
+  <div class="quick-actions">
+    <a class="btn btn-primary" href="/admin/members"><span class="material-symbols-outlined">person_add</span> সদস্য</a>
+    <a class="btn btn-success" href="/admin/deposits"><span class="material-symbols-outlined">add_card</span> জমা</a>
+    <a class="btn btn-danger" href="/admin/investments"><span class="material-symbols-outlined">trending_up</span> বিনিয়োগ</a>
+    <a class="btn btn-secondary" href="/admin/notices" style="background-color: var(--surface-high); border-color: var(--outline); color: var(--text);"><span class="material-symbols-outlined">send</span> নোটিশ</a>
+  </div>
+</div>
+<div class="stats-grid">
+  <% [
+    ['groups', 'মোট সদস্য', bn(stats.members), 'success', '+৪.২%'], ['pie_chart', 'মোট শেয়ার', bn(stats.totalShares), 'success', '+২.১%'],
+    ['account_balance', 'মোট ফান্ড', money(stats.totalFund), 'success', '+১২%'], ['payments', 'মোট জমা', money(stats.totalDeposit), 'success', '+৫.৫%'],
+    ['pending_actions', 'মোট বকেয়া', money(stats.totalDue), 'danger', '-০.৮%'], ['query_stats', 'মোট বিনিয়োগ', money(stats.totalInvestment), 'success', '+৮.৩%'],
+    ['trending_up', 'মোট লাভ', money(stats.totalProfit), 'success', '+১৫%'], ['calendar_month', 'চলতি মাসের জমা', money(stats.currentDeposit), 'success', '+৩%'],
+    ['event_busy', 'চলতি মাসের বকেয়া', money(stats.currentDue), 'danger', '-১.২%']
+  ].forEach(item => { %>
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon <%= item[3] %>"><span class="material-symbols-outlined"><%= item[0] %></span></div>
+        <span class="badge rounded-pill bg-<%= item[3] === 'danger' ? 'danger-subtle text-danger' : 'success-subtle text-success' %>" style="font-size: 11px; font-weight: bold;"><%= item[4] %></span>
+      </div>
+      <span><%= item[1] %></span>
+      <strong><%= item[2] %></strong>
+    </div>
+  <% }) %>
+</div>
+<div class="chart-grid mt-4">
+  <div class="panel"><h2>Deposit Chart</h2><canvas id="depositChart"></canvas></div>
+  <div class="panel"><h2>Investment Chart</h2><canvas id="investmentChart"></canvas></div>
+  <div class="panel"><h2>Profit Chart</h2><canvas id="profitChart"></canvas></div>
+</div>
+
+<div class="panel mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="m-0" style="font-size: 20px; font-weight: 800;">সাম্প্রতিক কার্যক্রম</h2>
+    <a href="/reports" class="btn btn-sm btn-outline-primary">সব রিপোর্ট দেখুন</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>সদস্য</th>
+          <th>কার্যক্রম</th>
+          <th>পরিমাণ</th>
+          <th>তারিখ</th>
+          <th>ধরণ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% recentTransactions.forEach(t => { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar-circle" style="width: 32px; height: 32px; font-size: 14px; border-radius: 10px;">
+                  <%= t.Member ? t.Member.name.substring(0, 1) : 'ফ' %>
+                </div>
+                <div>
+                  <strong style="display: block; font-size: 14px;"><%= t.Member ? t.Member.name : 'Future Co-Operative Socitey (FCS)' %></strong>
+                  <% if (t.Member) { %><small class="text-muted">ID: #<%= String(t.Member.id).padStart(4, '0') %></small><% } %>
+                </div>
+              </div>
+            </td>
+            <td><%= t.type %> - <%= t.description || '' %></td>
+            <td class="fw-bold <%= Number(t.debit) > 0 ? 'text-danger' : 'text-success' %>">
+              <%= Number(t.debit) > 0 ? '-' : '+' %><%= money(Number(t.debit) > 0 ? t.debit : t.credit) %>
+            </td>
+            <td><%= t.transactionDate %></td>
+            <td>
+              <span class="status-pill <%= Number(t.debit) > 0 ? 'due' : 'paid' %>">
+                <%= Number(t.debit) > 0 ? 'ডেবিট' : 'ক্রেডিট' %>
+              </span>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  window.dashboardCharts = {
+    deposits: <%- JSON.stringify(deposits.map(d => d.amount)) %>,
+    investments: <%- JSON.stringify(investments.map(i => i.amount)) %>,
+    profits: <%- JSON.stringify(profits.map(p => p.amount)) %>
+  };
+</script>

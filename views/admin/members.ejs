@@ -1,0 +1,465 @@
+<div class="page-heading">
+  <div>
+    <p>সদস্য যোগ, স্থগিত ও পুনরায় সক্রিয় করুন</p>
+    <h1>সদস্য ব্যবস্থাপনা</h1>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMember">
+    <span class="material-symbols-outlined">person_add</span> নতুন সদস্য
+  </button>
+</div>
+
+<!-- Filters Bento -->
+<div class="row g-3 panel mb-4">
+  <div class="col-md-3">
+    <label class="form-label">স্থিতি ফিল্টার</label>
+    <select class="form-select" id="statusFilter">
+      <option value="">সকল সদস্য</option>
+      <option value="active">Active</option>
+      <option value="suspended">Suspended</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">শেয়ার সংখ্যা</label>
+    <select class="form-select" id="sharesFilter">
+      <option value="">যেকোনো</option>
+      <option value="1">১ টি</option>
+      <option value="2">২ টি</option>
+      <option value="5">৫ টি বা বেশি</option>
+    </select>
+  </div>
+  <div class="col-md-6 d-flex align-items-end">
+    <div class="input-icon w-100" style="position: relative;">
+      <span class="material-symbols-outlined" style="position: absolute; left: 12px; bottom: 12px; color: var(--muted);">search</span>
+      <input class="form-control" style="padding-left: 40px;" id="searchInput" placeholder="নাম, আইডি বা মোবাইল নম্বর দিয়ে খুঁজুন..." type="text"/>
+    </div>
+  </div>
+</div>
+
+<div class="panel table-panel">
+  <div class="table-responsive">
+    <table class="table data-table align-middle" id="membersTable">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>ছবি</th>
+          <th>সদস্য আইডি</th>
+          <th>নাম</th>
+          <th>মোবাইল</th>
+          <th>শেয়ার</th>
+          <th class="text-end">মোট জমা</th>
+          <th class="text-end">বকেয়া</th>
+          <th class="text-center">স্ট্যাটাস</th>
+          <th class="text-center">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% members.forEach(m => { %>
+          <tr data-status="<%= m.status %>" data-shares="<%= m.shares %>">
+            <td>
+              <% if (m.photo) { %>
+                <img src="<%= imgUrl(m.photo) %>" class="rounded-circle object-cover" style="width: 38px; height: 38px; border: 1px solid var(--outline);" />
+              <% } else { %>
+                <div class="avatar-circle" style="width: 38px; height: 38px; font-size: 16px; border-radius: 50%;">
+                  <%= m.name.substring(0, 1) %>
+                </div>
+              <% } %>
+            </td>
+            <td class="fw-bold text-primary">BF-2026-<%= String(m.id).padStart(3, '0') %></td>
+            <td><strong><%= m.name %></strong></td>
+            <td><%= m.mobile %></td>
+            <td><%= bn(m.shares) %> টি</td>
+            <td class="text-end fw-bold text-success"><%= money(m.getDataValue('totalDeposit')) %></td>
+            <td class="text-end fw-bold text-danger"><%= money(m.getDataValue('totalDue')) %></td>
+            <td class="text-center">
+              <span class="status-pill <%= m.status === 'active' ? 'paid' : 'due' %>">
+                <%= m.status === 'active' ? 'সক্রিয়' : 'স্থগিত' %>
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-sm btn-outline-primary btn-edit-member"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editMember" 
+                        data-id="<%= m.id %>"
+                        data-name="<%= m.name %>"
+                        data-mobile="<%= m.mobile %>"
+                        data-email="<%= m.email %>"
+                        data-address="<%= m.address %>"
+                        data-joindate="<%= m.joinDate %>"
+                        data-deposit="<%= m.monthlyDeposit %>"
+                        data-shares="<%= m.shares %>"
+                        data-status="<%= m.status %>"
+                        style="font-size: 12px; padding: 4px 8px;">
+                  Edit
+                </button>
+                <form method="post" action="/admin/members/<%= m.id %>/status" class="d-inline">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <input type="hidden" name="status" value="<%= m.status === 'active' ? 'suspended' : 'active' %>">
+                  <button class="btn btn-sm <%= m.status === 'active' ? 'btn-outline-warning' : 'btn-outline-success' %>" style="font-size: 12px; padding: 4px 8px;">
+                    <%= m.status === 'active' ? 'Suspend' : 'Activate' %>
+                  </button>
+                </form>
+                <form method="post" action="/admin/members/<%= m.id %>/delete" class="d-inline confirm-form">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button class="btn btn-sm btn-outline-danger" style="font-size: 12px; padding: 4px 8px;">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Multi-Step Registration Modal -->
+<div class="modal fade" id="addMember" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <form class="modal-content" id="multiStepForm" method="post" action="/admin/members?_csrf=<%= csrfToken %>" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      
+      <div class="modal-header">
+        <h5 class="modal-title font-bold">নতুন সদস্য নিবন্ধন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Step Indicators -->
+      <div class="px-4 pt-4 pb-2 border-bottom">
+        <div class="d-flex justify-content-between align-items-center max-w-md mx-auto position-relative" style="max-width: 450px; margin: 0 auto;">
+          <div class="position-absolute bg-secondary-subtle" style="top: 15px; left: 10%; right: 10%; height: 2px; z-index: 1;"></div>
+          <div class="position-absolute bg-primary" id="modalProgressLine" style="top: 15px; left: 10%; width: 0%; height: 2px; z-index: 2; transition: 0.3s ease;"></div>
+          
+          <div class="text-center position-relative" style="z-index: 3;">
+            <div class="rounded-circle border border-primary bg-primary text-white d-flex align-items-center justify-center font-bold" id="circleStep1" style="width: 32px; height: 32px; margin: 0 auto 4px;">১</div>
+            <small style="font-size: 11px; font-weight: 600;">ব্যক্তিগত তথ্য</small>
+          </div>
+          <div class="text-center position-relative" style="z-index: 3;">
+            <div class="rounded-circle border border-secondary-subtle bg-white text-muted d-flex align-items-center justify-center font-bold" id="circleStep2" style="width: 32px; height: 32px; margin: 0 auto 4px;">২</div>
+            <small style="font-size: 11px; font-weight: 600;">ফান্ড তথ্য</small>
+          </div>
+          <div class="text-center position-relative" style="z-index: 3;">
+            <div class="rounded-circle border border-secondary-subtle bg-white text-muted d-flex align-items-center justify-center font-bold" id="circleStep3" style="width: 32px; height: 32px; margin: 0 auto 4px;">৩</div>
+            <small style="font-size: 11px; font-weight: 600;">ছবি আপলোড</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <!-- Step 1: Personal Info -->
+        <div class="modal-step-section" id="modalSection1">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">person</span>
+            <strong style="font-size: 16px;">ব্যক্তিগত বিবরণ</strong>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">সদস্যের নাম</label>
+              <input class="form-control" name="name" type="text" placeholder="যেমন: আব্দুল করিম" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">মোবাইল নম্বর</label>
+              <input class="form-control" name="mobile" type="text" placeholder="০১৭XXXXXXXX" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">ইমেইল ঠিকানা</label>
+              <input class="form-control" name="email" type="email" placeholder="example@mail.com" required>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">বর্তমান ঠিকানা</label>
+              <textarea class="form-control" name="address" placeholder="বাসা/গ্রাম, ডাকঘর, থানা, জেলা" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Fund Info -->
+        <div class="modal-step-section d-none" id="modalSection2">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">account_balance</span>
+            <strong style="font-size: 16px;">ফান্ড ও সদস্যপদ বিবরণ</strong>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">যোগদানের তারিখ</label>
+              <input class="form-control" name="joinDate" type="date" required value="<%= new Date().toISOString().substring(0, 10) %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">মাসিক জমার পরিমাণ (টাকা)</label>
+              <input class="form-control" name="monthlyDeposit" type="number" min="0" value="500" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">শেয়ার সংখ্যা</label>
+              <input class="form-control" name="shares" type="number" min="1" value="1" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">পাসওয়ার্ড (লগইনের জন্য)</label>
+              <input class="form-control" name="password" type="password" placeholder="••••••••" required value="12345678">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">স্ট্যাটাস</label>
+              <select class="form-select" name="status">
+                <option value="active">Active</option>
+                <option value="suspended">Suspended</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Photo Upload -->
+        <div class="modal-step-section d-none" id="modalSection3">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary">add_a_photo</span>
+            <strong style="font-size: 16px;">সদস্য ছবি</strong>
+          </div>
+          <div class="p-4 border border-dashed rounded-3 text-center bg-light cursor-pointer" id="modalDropZone" style="cursor: pointer;">
+            <span class="material-symbols-outlined text-primary text-4xl mb-2" id="modalUploadIcon">cloud_upload</span>
+            <p class="m-0 fw-bold">ফাইল সিলেক্ট করতে এখানে ক্লিক করুন</p>
+            <small class="text-muted">PNG, JPG বা JPEG ফরম্যাট সমর্থন করে (সর্বোচ্চ ২ MB)</small>
+            <input class="d-none" name="photo" type="file" id="modalFileInput" accept="image/*" />
+            <div class="mt-3 d-none" id="modalPreviewWrap">
+              <img id="modalPreviewImage" src="#" class="img-thumbnail rounded-circle" style="width: 100px; height: 100px; object-fit: cover;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary d-none" id="modalPrevBtn">
+          <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span> পূর্ববর্তী
+        </button>
+        <div class="ms-auto">
+          <button type="button" class="btn btn-primary" id="modalNextBtn">
+            পরবর্তী <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+          </button>
+          <button type="submit" class="btn btn-success d-none" id="modalSubmitBtn">
+            সংরক্ষণ করুন <span class="material-symbols-outlined" style="font-size: 18px;">check_circle</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div><!-- Edit Member Modal -->
+<div class="modal fade" id="editMember" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <form class="modal-content" id="editMemberForm" method="post" action="" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">সদস্য তথ্য সংশোধন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-primary">person</span>
+          <strong style="font-size: 16px;">ব্যক্তিগত ও ফান্ড তথ্য সংশোধন</strong>
+        </div>
+        
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">সদস্যের নাম</label>
+            <input class="form-control" name="name" id="editName" type="text" placeholder="যেমন: আব্দুল করিম" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">মোবাইল নম্বর</label>
+            <input class="form-control" name="mobile" id="editMobile" type="text" placeholder="০১৭XXXXXXXX" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">ইমেইল ঠিকানা</label>
+            <input class="form-control" name="email" id="editEmail" type="email" placeholder="example@mail.com" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">যোগদানের তারিখ</label>
+            <input class="form-control" name="joinDate" id="editJoinDate" type="date" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">মাসিক জমার পরিমাণ (টাকা)</label>
+            <input class="form-control" name="monthlyDeposit" id="editMonthlyDeposit" type="number" min="0" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">শেয়ার সংখ্যা</label>
+            <input class="form-control" name="shares" id="editShares" type="number" min="1" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">স্ট্যাটাস</label>
+            <select class="form-select" name="status" id="editStatus">
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">বর্তমান ঠিকানা</label>
+            <textarea class="form-control" name="address" id="editAddress" placeholder="বাসা/গ্রাম, ডাকঘর, থানা, জেলা" rows="2"></textarea>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">সদস্য ছবি পরিবর্তন করুন (ঐচ্ছিক)</label>
+            <input class="form-control" name="photo" type="file" accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-success">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Custom filter client-side logic
+    const statusFilter = document.getElementById('statusFilter');
+    const sharesFilter = document.getElementById('sharesFilter');
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#membersTable tbody tr');
+
+    function filterTable() {
+      const statusVal = statusFilter.value.toLowerCase();
+      const sharesVal = sharesFilter.value;
+      const searchVal = searchInput.value.toLowerCase().trim();
+
+      tableRows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status').toLowerCase();
+        const rowShares = parseInt(row.getAttribute('data-shares'));
+        const textContent = row.textContent.toLowerCase();
+
+        let show = true;
+        if (statusVal && rowStatus !== statusVal) show = false;
+        if (sharesVal) {
+          if (sharesVal === '5' && rowShares < 5) show = false;
+          if (sharesVal !== '5' && rowShares !== parseInt(sharesVal)) show = false;
+        }
+        if (searchVal && !textContent.includes(searchVal)) show = false;
+
+        row.style.display = show ? '' : 'none';
+      });
+    }
+
+    statusFilter.addEventListener('change', filterTable);
+    sharesFilter.addEventListener('change', filterTable);
+    searchInput.addEventListener('input', filterTable);
+
+    // Multi-step form modal logic
+    let step = 1;
+    const nextBtn = document.getElementById('modalNextBtn');
+    const prevBtn = document.getElementById('modalPrevBtn');
+    const submitBtn = document.getElementById('modalSubmitBtn');
+    const progressLine = document.getElementById('modalProgressLine');
+
+    const sec1 = document.getElementById('modalSection1');
+    const sec2 = document.getElementById('modalSection2');
+    const sec3 = document.getElementById('modalSection3');
+
+    const c1 = document.getElementById('circleStep1');
+    const c2 = document.getElementById('circleStep2');
+    const c3 = document.getElementById('circleStep3');
+
+    function validateStep(s) {
+      const currentSection = document.getElementById(`modalSection${s}`);
+      const inputs = currentSection.querySelectorAll('input[required], select[required]');
+      let valid = true;
+      inputs.forEach(input => {
+        if (!input.checkValidity()) {
+          input.reportValidity();
+          valid = false;
+        }
+      });
+      return valid;
+    }
+
+    function updateWizard() {
+      sec1.classList.add('d-none');
+      sec2.classList.add('d-none');
+      sec3.classList.add('d-none');
+
+      c2.classList.replace('bg-primary', 'bg-white');
+      c2.classList.replace('text-white', 'text-muted');
+      c2.classList.add('border-secondary-subtle');
+      c3.classList.replace('bg-primary', 'bg-white');
+      c3.classList.replace('text-white', 'text-muted');
+      c3.classList.add('border-secondary-subtle');
+
+      if (step === 1) {
+        sec1.classList.remove('d-none');
+        prevBtn.classList.add('d-none');
+        nextBtn.classList.remove('d-none');
+        submitBtn.classList.add('d-none');
+        progressLine.style.width = '0%';
+      } else if (step === 2) {
+        sec2.classList.remove('d-none');
+        prevBtn.classList.remove('d-none');
+        nextBtn.classList.remove('d-none');
+        submitBtn.classList.add('d-none');
+        progressLine.style.width = '50%';
+        c2.classList.replace('bg-white', 'bg-primary');
+        c2.classList.replace('text-muted', 'text-white');
+        c2.classList.remove('border-secondary-subtle');
+      } else if (step === 3) {
+        sec3.classList.remove('d-none');
+        prevBtn.classList.remove('d-none');
+        nextBtn.classList.add('d-none');
+        submitBtn.classList.remove('d-none');
+        progressLine.style.width = '100%';
+        c2.classList.replace('bg-white', 'bg-primary');
+        c2.classList.replace('text-muted', 'text-white');
+        c2.classList.remove('border-secondary-subtle');
+        c3.classList.replace('bg-white', 'bg-primary');
+        c3.classList.replace('text-muted', 'text-white');
+        c3.classList.remove('border-secondary-subtle');
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (validateStep(step)) {
+        step++;
+        updateWizard();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      step--;
+      updateWizard();
+    });
+
+    // File selection UI
+    const dropZone = document.getElementById('modalDropZone');
+    const fileInput = document.getElementById('modalFileInput');
+    const previewImage = document.getElementById('modalPreviewImage');
+    const previewWrap = document.getElementById('modalPreviewWrap');
+    const uploadIcon = document.getElementById('modalUploadIcon');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          previewWrap.classList.remove('d-none');
+          uploadIcon.classList.add('d-none');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Edit member button click handler to populate Edit Modal (using delegation to support pagination/DataTables)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-edit-member');
+      if (!btn) return;
+
+      const data = btn.dataset;
+      const form = document.getElementById('editMemberForm');
+      const csrfToken = form.querySelector('input[name="_csrf"]').value;
+      form.action = `/admin/members/${data.id}?_csrf=${csrfToken}`;
+
+      document.getElementById('editName').value = data.name || '';
+      document.getElementById('editMobile').value = data.mobile || '';
+      document.getElementById('editEmail').value = data.email || '';
+      document.getElementById('editAddress').value = data.address || '';
+      document.getElementById('editJoinDate').value = data.joindate ? data.joindate.substring(0, 10) : '';
+      document.getElementById('editMonthlyDeposit').value = data.deposit || '';
+      document.getElementById('editShares').value = data.shares || '';
+      document.getElementById('editStatus').value = data.status || 'active';
+    });
+  });
+</script>

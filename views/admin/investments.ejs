@@ -1,0 +1,333 @@
+<style>
+  .investment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .investment-card {
+    transition: all 0.25s ease;
+  }
+  .investment-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 87, 205, 0.08);
+  }
+</style>
+
+<div class="page-heading">
+  <div>
+    <p>ফান্ডের বিনিয়োগ তৈরি ও পোর্টফোলিও ট্র্যাকিং</p>
+    <h1>বিনিয়োগ পোর্টফোলিও</h1>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addInvestment">
+    <span class="material-symbols-outlined">add</span> নতুন বিনিয়োগ
+  </button>
+</div>
+
+<!-- Bento Stats Grid -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">account_balance</span></div>
+      </div>
+      <span>মোট বিনিয়োগ</span>
+      <strong><%= money(stats.totalInvestment) %></strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 109, 65, 0.1); color: var(--secondary);"><span class="material-symbols-outlined">autoplay</span></div>
+      </div>
+      <span>সক্রিয় বিনিয়োগ</span>
+      <strong><%= money(stats.activeInvestment) %></strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon danger" style="background: rgba(186, 26, 26, 0.1); color: var(--error);"><span class="material-symbols-outlined">task_alt</span></div>
+      </div>
+      <span>বন্ধ বিনিয়োগ</span>
+      <strong><%= money(stats.closedInvestment) %></strong>
+    </div>
+  </div>
+</div>
+
+<!-- Filters Panel -->
+<div class="row g-3 panel mb-4">
+  <div class="col-md-3">
+    <label class="form-label">ক্যাটাগরি ফিল্টার</label>
+    <select class="form-select" id="categoryFilter">
+      <option value="">সকল ক্যাটাগরি</option>
+      <option value="ব্যবসা">ব্যবসা</option>
+      <option value="fdr">FDR</option>
+      <option value="স্টক">স্টক</option>
+      <option value="ঋণ">ঋণ</option>
+      <option value="অন্যান্য">অন্যান্য</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">স্ট্যাটাস ফিল্টার</label>
+    <select class="form-select" id="statusFilter">
+      <option value="">সকল প্রজেক্ট</option>
+      <option value="active">Active</option>
+      <option value="closed">Closed</option>
+    </select>
+  </div>
+  <div class="col-md-6 d-flex align-items-end">
+    <div class="input-icon w-100" style="position: relative;">
+      <span class="material-symbols-outlined" style="position: absolute; left: 12px; bottom: 12px; color: var(--muted);">search</span>
+      <input class="form-control" style="padding-left: 40px;" id="searchInput" placeholder="বিনিয়োগ শিরোনাম দিয়ে খুঁজুন..." type="text"/>
+    </div>
+  </div>
+</div>
+
+<!-- Investment Premium Card Grid -->
+<div class="investment-grid" id="investmentGrid">
+  <% investments.forEach(i => { 
+      const totalProfit = i.Profits ? i.Profits.reduce((sum, p) => sum + Number(p.amount), 0) : 0;
+      let catIcon = 'deployed_code';
+      let catColor = 'var(--muted)';
+      if (i.category === 'ব্যবসা') { catIcon = 'storefront'; catColor = 'var(--primary)'; }
+      else if (i.category === 'FDR') { catIcon = 'savings'; catColor = 'var(--secondary)'; }
+      else if (i.category === 'স্টক') { catIcon = 'show_chart'; catColor = '#e67e22'; }
+      else if (i.category === 'ঋণ') { catIcon = 'handshake'; catColor = 'var(--tertiary)'; }
+  %>
+    <div class="card panel investment-card p-0 overflow-hidden" data-category="<%= i.category %>" data-status="<%= i.status %>" data-title="<%= i.title %>">
+      <!-- Category Header Visual -->
+      <div class="p-3 d-flex align-items-center justify-content-between border-bottom" style="background-color: var(--surface-low);">
+        <div class="d-flex align-items-center gap-2">
+          <span class="material-symbols-outlined" style="color: <%= catColor %>; font-size: 24px;"><%= catIcon %></span>
+          <span class="fw-bold" style="color: <%= catColor %>; font-size: 14px;"><%= i.category %></span>
+        </div>
+        <span class="status-pill <%= i.status === 'active' ? 'active' : 'closed' %>">
+          <%= i.status === 'active' ? 'Active' : 'Closed' %>
+        </span>
+      </div>
+
+      <!-- Main Info Body -->
+      <div class="p-4">
+        <h4 class="font-title-lg text-title-lg font-bold mb-1" style="font-size: 18px;"><%= i.title %></h4>
+        <p class="text-muted mb-3" style="font-size: 13px; min-height: 38px;"><%= i.description || 'কোনো বিবরণ নেই।' %></p>
+        
+        <div class="row g-2 py-3 border-top border-bottom mb-3" style="background-color: var(--surface-bright);">
+          <div class="col-6">
+            <small class="text-muted d-block" style="font-size: 11px;">বিনিয়োগ পরিমাণ</small>
+            <strong class="text-primary" style="font-size: 16px;"><%= money(i.amount) %></strong>
+          </div>
+          <div class="col-6 text-end">
+            <small class="text-muted d-block" style="font-size: 11px;">অর্জিত লাভ</small>
+            <strong class="text-success" style="font-size: 16px;">+<%= money(totalProfit) %></strong>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <small class="text-muted d-block" style="font-size: 11px;">শুরুর তারিখ</small>
+            <span class="fw-semibold" style="font-size: 13px;"><%= i.investmentDate ? new Date(i.investmentDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) : '---' %></span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-primary btn-edit-investment"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#editInvestment" 
+                    data-id="<%= i.id %>"
+                    data-title="<%= i.title %>"
+                    data-category="<%= i.category %>"
+                    data-amount="<%= i.amount %>"
+                    data-date="<%= i.investmentDate %>"
+                    data-status="<%= i.status %>"
+                    data-description="<%= i.description || '' %>"
+                    style="font-size: 12px; padding: 4px 8px;">
+              Edit
+            </button>
+            <form method="post" action="/admin/investments/<%= i.id %>" class="d-inline confirm-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <input type="hidden" name="status" value="<%= i.status === 'active' ? 'closed' : 'active' %>">
+              <button class="btn btn-sm <%= i.status === 'active' ? 'btn-outline-warning' : 'btn-outline-success' %>" style="font-size: 12px; padding: 4px 8px;">
+                <%= i.status === 'active' ? 'Close' : 'Activate' %>
+              </button>
+            </form>
+            <form method="post" action="/admin/investments/<%= i.id %>/delete" class="d-inline confirm-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="btn btn-sm btn-outline-danger" style="font-size: 12px; padding: 4px 8px;">
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+
+  <!-- Add New Investment Card Dotted Placeholder -->
+  <div class="panel d-flex flex-column align-items-center justify-content-center text-center p-4" style="border: 2px dashed var(--outline); min-height: 280px; cursor: pointer; background: transparent;" data-bs-toggle="modal" data-bs-target="#addInvestment">
+    <span class="material-symbols-outlined text-primary mb-3" style="font-size: 48px;">add_circle</span>
+    <h5 class="font-title-lg font-bold">নতুন বিনিয়োগ যোগ করুন</h5>
+    <p class="text-muted" style="font-size: 13px; max-width: 240px;">ফান্ডের পোর্টফোলিও বাড়াতে নতুন একটি বিনিয়োগ প্রকল্প শুরু করুন।</p>
+  </div>
+</div>
+
+<!-- Add Investment Modal -->
+<div class="modal fade" id="addInvestment" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" method="post" action="/admin/investments?_csrf=<%= csrfToken %>">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">নতুন বিনিয়োগ যোগ করুন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">বিনিয়োগ প্রকল্পের শিরোনাম</label>
+          <input class="form-control" name="title" placeholder="যেমন: স্বপ্নচূড়া এপার্টমেন্টস" required>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label">ক্যাটাগরি</label>
+            <select class="form-select" name="category" required>
+              <option value="ব্যবসা">ব্যবসা</option>
+              <option value="FDR">FDR</option>
+              <option value="স্টক">স্টক</option>
+              <option value="ঋণ">ঋণ</option>
+              <option value="অন্যান্য">অন্যান্য</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">বিনিয়োগ পরিমাণ (৳)</label>
+            <input class="form-control" name="amount" type="number" placeholder="৫০০০০০" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label">তারিখ</label>
+            <input class="form-control" name="investmentDate" type="date" required value="<%= new Date().toISOString().substring(0, 10) %>">
+          </div>
+          <div class="col-6">
+            <label class="form-label">স্ট্যাটাস</label>
+            <select class="form-select" name="status" required>
+              <option value="active">Active</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">বিবরণ</label>
+          <textarea class="form-control" name="description" placeholder="প্রকল্পের বিস্তারিত বিবরণ এখানে লিখুন..." rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-primary">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Investment Modal -->
+<div class="modal fade" id="editInvestment" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="editInvestmentForm" method="post" action="">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">বিনিয়োগ তথ্য সংশোধন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">বিনিয়োগ প্রকল্পের শিরোনাম</label>
+          <input class="form-control" name="title" id="editTitle" placeholder="যেমন: স্বপ্নচূড়া এপার্টমেন্টস" required>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label">ক্যাটাগরি</label>
+            <select class="form-select" name="category" id="editCategory" required>
+              <option value="ব্যবসা">ব্যবসা</option>
+              <option value="FDR">FDR</option>
+              <option value="স্টক">স্টক</option>
+              <option value="ঋণ">ঋণ</option>
+              <option value="অন্যান্য">অন্যান্য</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label">বিনিয়োগ পরিমাণ (৳)</label>
+            <input class="form-control" name="amount" id="editAmount" type="number" placeholder="৫০০০০০" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-6">
+            <label class="form-label">তারিখ</label>
+            <input class="form-control" name="investmentDate" id="editInvestmentDate" type="date" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label">স্ট্যাটাস</label>
+            <select class="form-select" name="status" id="editStatus" required>
+              <option value="active">Active</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">বিবরণ</label>
+          <textarea class="form-control" name="description" id="editDescription" placeholder="প্রকল্পের বিস্তারিত বিবরণ এখানে লিখুন..." rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-success">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const categoryFilter = document.getElementById('categoryFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('#investmentGrid .investment-card');
+
+    function filterGrid() {
+      const catVal = categoryFilter.value.toLowerCase();
+      const statusVal = statusFilter.value.toLowerCase();
+      const searchVal = searchInput.value.toLowerCase().trim();
+
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category').toLowerCase();
+        const cardStatus = card.getAttribute('data-status').toLowerCase();
+        const cardTitle = card.getAttribute('data-title').toLowerCase();
+
+        let show = true;
+        if (catVal && cardCat !== catVal) show = false;
+        if (statusVal && cardStatus !== statusVal) show = false;
+        if (searchVal && !cardTitle.includes(searchVal)) show = false;
+
+        card.style.display = show ? '' : 'none';
+      });
+    }
+
+    categoryFilter.addEventListener('change', filterGrid);
+    statusFilter.addEventListener('change', filterGrid);
+    searchInput.addEventListener('input', filterGrid);
+
+    // Edit investment button click handler to populate Edit Modal
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-edit-investment');
+      if (!btn) return;
+
+      const data = btn.dataset;
+      const form = document.getElementById('editInvestmentForm');
+      const csrfToken = form.querySelector('input[name="_csrf"]').value;
+      
+      form.action = `/admin/investments/${data.id}?_csrf=${csrfToken}`;
+
+      document.getElementById('editTitle').value = data.title || '';
+      document.getElementById('editCategory').value = data.category || '';
+      document.getElementById('editAmount').value = data.amount || '';
+      document.getElementById('editInvestmentDate').value = data.date || '';
+      document.getElementById('editStatus').value = data.status || '';
+      document.getElementById('editDescription').value = data.description || '';
+    });
+  });
+</script>

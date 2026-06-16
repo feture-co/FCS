@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>প্রোফাইল ও সেটিংস - বন্ধু ফান্ড</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdad9",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2d3135",
+                    "on-secondary-fixed": "#002110",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e8",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e0e3e8",
+                    "tertiary-fixed-dim": "#ffb3b2",
+                    "primary-fixed": "#dae2ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#92001f",
+                    "primary": "#0057cd",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d7dadf",
+                    "background": "#f7f9ff",
+                    "tertiary-container": "#dd3645",
+                    "outline-variant": "#c2c6d8",
+                    "surface-container-low": "#f1f4f9",
+                    "on-surface": "#181c20",
+                    "on-tertiary-fixed": "#410008",
+                    "inverse-primary": "#b1c5ff",
+                    "surface-container-high": "#e5e8ee",
+                    "tertiary": "#b91830",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#93f7ba",
+                    "secondary-fixed-dim": "#77da9f",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "surface-tint": "#0057ce",
+                    "outline": "#727787",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed": "#001946",
+                    "on-primary-fixed-variant": "#00419e",
+                    "inverse-on-surface": "#eef1f6",
+                    "on-primary-container": "#ffffff",
+                    "surface-container": "#ebeef3",
+                    "secondary-container": "#90f4b7",
+                    "on-secondary-fixed-variant": "#00522f",
+                    "on-secondary-container": "#007144",
+                    "primary-container": "#0d6efd",
+                    "secondary": "#006d41",
+                    "on-tertiary-container": "#130001",
+                    "on-surface-variant": "#424655",
+                    "on-background": "#181c20"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "card-gap": "24px",
+                    "container-padding-desktop": "32px",
+                    "gutter": "24px",
+                    "container-padding-mobile": "16px",
+                    "sidebar-width": "280px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Noto Sans Bengali"],
+                    "label-sm": ["Noto Sans Bengali"],
+                    "label-md": ["Noto Sans Bengali"],
+                    "display-lg": ["Noto Sans Bengali"],
+                    "title-lg": ["Noto Sans Bengali"],
+                    "headline-md": ["Noto Sans Bengali"],
+                    "headline-lg-mobile": ["Noto Sans Bengali"],
+                    "body-md": ["Noto Sans Bengali"],
+                    "headline-lg": ["Noto Sans Bengali"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "display-lg": ["40px", {"lineHeight": "52px", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Noto Sans Bengali', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="bg-surface dark:bg-surface-dim shadow-sm docked full-width top-0 flex justify-between items-center w-full px-container-padding-mobile md:px-container-padding-desktop py-unit h-16 sticky z-50">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">বন্ধু ফান্ড</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-high transition-colors rounded-full" data-icon="notifications">notifications</button>
+<img alt="ইউজার প্রোফাইল" class="w-10 h-10 rounded-full border-2 border-primary-container" data-alt="A professional headshot of a smiling Bengali man in his late 20s wearing a clean white shirt, set against a blurred modern office background with soft blue tones. The lighting is bright and airy, following a premium fintech app aesthetic with high clarity and a friendly, trustworthy atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJRTILlEDQLdKpESVcZ5LQK_uoTjURk_G4wJTQSvJSW9OMXwyMjtt-9C8oHx4W800JGXhvoRwol5Ca-fgUEO2dBerKe410KWL29mp4KvgiLEGGpyqlvzpmfpTz8F9BCUh_r4YNiEb7qV43PRMKJkbO8RoZNH1D5WBF3N9_2ib3rTaTyJDKiLWJvrqJi7vCgAgzx_Fxgs377kyW1_-czyDrkxQxxg8L-U8ZzvPX25lmYoB9Q-W9LtBE9kjKZ92kj8_CcE4h_DFcdG0"/>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- Sidebar (Desktop) -->
+<aside class="hidden lg:flex flex-col gap-unit p-4 w-sidebar-width h-screen sticky top-16 bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant">
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">ড্যাশবোর্ড</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">সদস্য ব্যবস্থাপনা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-label-md">মাসিক জমা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-label-md text-label-md">বিনিয়োগ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">সেটিংস</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-container-padding-mobile md:p-container-padding-desktop pb-24 lg:pb-8">
+<!-- Header Section -->
+<div class="mb-gutter">
+<h1 class="font-headline-lg text-headline-lg mb-2">প্রোফাইল ও সেটিংস</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">আপনার ব্যক্তিগত তথ্য এবং অ্যাকাউন্ট সেটিংস এখান থেকে পরিবর্তন করুন।</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Profile Card (Left/Top) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-gutter relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4">
+<button class="p-2 bg-primary-container text-on-primary-container rounded-full scale-95 transition-transform duration-200 hover:scale-100">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="relative mb-6">
+<img alt="ইউজার প্রোফাইল" class="w-32 h-32 rounded-full border-4 border-primary/20 p-1" data-alt="Close up profile portrait of a modern professional male in a corporate setting. The image should feature a soft-focus office background with teal and deep blue accents. Lighting is professional studio quality, emphasizing trust and friendliness, consistent with a clean financial app user interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS2NGSGRkGk6FtxoyHKendLKuZ2tQytkwOrMZFG57XmVnxt4ElW6O67_iw9qdoCJXCfLySZqzIQromWBa0aQI4bZ8jDFmQs93FtJD7IFs34tG7DAV7laFNZEBQNahE3Ll3V7m_yYcltDNmKrZzwnq7J4tSu4G14XP5rqGCbEAqSbiPLdOrVGl26_2gxU-ju63_YYNNVK9MIK1LRIXFsKeXhwu_2IUOy8yWZy9SQXBHsadjd9XuUNlggrXHnQmwsHOT9qAIj9LSYXw"/>
+<div class="absolute bottom-1 right-1 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">আরিফুর রহমান</h2>
+<span class="inline-flex items-center rounded-full bg-secondary-container px-3 py-1 text-on-secondary-container font-label-sm text-label-sm mb-6">
+                            প্রিমিয়াম সদস্য
+                        </span>
+<div class="w-full space-y-4 text-left">
+<div class="flex items-center gap-4 p-3 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+<span class="material-symbols-outlined" data-icon="id_card">id_card</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">মেম্বার আইডি</p>
+<p class="font-title-lg text-title-lg text-on-surface">BF-984210</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+<span class="material-symbols-outlined" data-icon="call">call</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">মোবাইল নম্বর</p>
+<p class="font-title-lg text-title-lg text-on-surface">+৮৮০ ১৭১২-৩৪৫৬৭৮</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 rounded-lg hover:bg-surface-container-low transition-colors">
+<div class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">ইমেইল ঠিকানা</p>
+<p class="font-title-lg text-title-lg text-on-surface">arifur@bondhufund.com</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Settings Grid (Right/Bottom) -->
+<div class="lg:col-span-7 space-y-gutter">
+<!-- Security & Auth -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6">
+<h3 class="font-title-lg text-title-lg mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+                            নিরাপত্তা ও অথেন্টিকেশন
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<button class="flex items-center justify-between p-4 border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="lock_reset">lock_reset</span>
+<span class="font-label-md text-label-md">পাসওয়ার্ড পরিবর্তন</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-4 border border-outline-variant rounded-xl hover:bg-surface-container-high transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="fingerprint">fingerprint</span>
+<span class="font-label-md text-label-md">বায়োমেট্রিক লগইন</span>
+</div>
+<div class="w-10 h-5 bg-secondary-container rounded-full relative">
+<div class="absolute right-1 top-1 bg-white w-3 h-3 rounded-full"></div>
+</div>
+</button>
+</div>
+</div>
+<!-- Preferences -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6">
+<h3 class="font-title-lg text-title-lg mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="tune">tune</span>
+                            অ্যাপ সেটিংস
+                        </h3>
+<div class="space-y-2">
+<!-- Dark Mode Toggle -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-full">
+<span class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">ডার্ক মোড</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">আপনার চোখের আরামের জন্য ডার্ক মোড ব্যবহার করুন</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<!-- Notifications -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">নোটিফিকেশন প্রেফারেন্স</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">পেমেন্ট এবং আপডেট অ্যালার্ট ম্যানেজ করুন</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Privacy -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low rounded-xl transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 flex items-center justify-center bg-surface-container-high rounded-full">
+<span class="material-symbols-outlined" data-icon="privacy_tip">privacy_tip</span>
+</div>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface">প্রাইভেসি সেটিংস</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">আপনার ডেটা শেয়ারিং নিয়ন্ত্রণ করুন</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Log out -->
+<button class="w-full flex items-center justify-center gap-2 py-4 bg-error-container text-on-error-container rounded-xl font-bold hover:bg-error hover:text-white transition-all scale-98 active:scale-95">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                        লগ আউট করুন
+                    </button>
+</div>
+</div>
+</main>
+</div>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 pb-safe bg-surface dark:bg-surface-container-lowest shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">ড্যাশবোর্ড</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-sm text-label-sm">জমা</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm">বিনিয়োগ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-sm text-label-sm">স্টেটমেন্ট</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">প্রোফাইল</span>
+</a>
+</nav>
+<script>
+        // Simple dark mode toggle logic
+        const toggle = document.querySelector('input[type="checkbox"]');
+        toggle.addEventListener('change', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Add some micro-interactions to buttons
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.classList.add('scale-95');
+            });
+            el.addEventListener('mouseup', () => {
+                el.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>

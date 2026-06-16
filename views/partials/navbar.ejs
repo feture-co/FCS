@@ -1,0 +1,69 @@
+<% if (user) { 
+  const adminItems = [
+    ['/admin/dashboard', 'dashboard', 'ড্যাশবোর্ড'],
+    ['/admin/members', 'group', 'সদস্য'],
+    ['/admin/admins', 'admin_panel_settings', 'অ্যাডমিন'],
+    ['/admin/deposits', 'account_balance_wallet', 'জমা'],
+    ['/admin/dues', 'history_toggle_off', 'বকেয়া'],
+    ['/admin/investments', 'trending_up', 'বিনিয়োগ'],
+    ['/admin/profits', 'payments', 'লাভ'],
+    ['/admin/notices', 'campaign', 'নোটিশ'],
+    ['/reports', 'description', 'রিপোর্ট']
+  ];
+  const memberItems = [
+    ['/member/dashboard', 'dashboard', 'ড্যাশবোর্ড'],
+    ['/member/deposits', 'account_balance_wallet', 'জমা'],
+    ['/member/statement', 'receipt_long', 'স্টেটমেন্ট'],
+    ['/member/notices', 'campaign', 'নোটিশ'],
+    ['/member/profile', 'person', 'প্রোফাইল']
+  ];
+  const items = user.role === 'admin' ? adminItems : memberItems;
+%>
+<aside class="app-sidebar">
+  <a class="brand-block" href="<%= user.role === 'admin' ? '/admin/dashboard' : '/member/dashboard' %>">
+    <span class="brand-icon material-symbols-outlined">account_balance</span>
+    <span>
+      <strong style="font-size: 13px;">Future Co-Operative</strong>
+      <small>Socitey (FCS)</small>
+    </span>
+  </a>
+  <nav class="sidebar-nav">
+    <% items.forEach(item => { const active = currentPath.startsWith(item[0]); %>
+      <a class="<%= active ? 'active' : '' %>" href="<%= item[0] %>">
+        <span class="material-symbols-outlined"><%= item[1] %></span>
+        <span><%= item[2] %></span>
+      </a>
+    <% }) %>
+  </nav>
+
+</aside>
+<header class="app-topbar">
+  <div class="mobile-brand">
+    <span class="material-symbols-outlined">account_balance</span>
+    <strong>FCS</strong>
+  </div>
+  <div class="top-search">
+    <span class="material-symbols-outlined">search</span>
+    <input type="search" placeholder="সদস্য বা লেনদেন খুঁজুন...">
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" type="button"><span class="material-symbols-outlined">notifications</span></button>
+    <div class="user-chip">
+      <span><%= user.name %></span>
+      <small><%= user.role === 'admin' ? 'অ্যাডমিন' : 'সদস্য' %></small>
+    </div>
+    <form action="/logout" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button class="btn btn-outline-primary btn-sm">লগআউট</button>
+    </form>
+  </div>
+</header>
+<nav class="bottom-nav">
+  <% items.slice(0, 5).forEach(item => { const active = currentPath.startsWith(item[0]); %>
+    <a class="<%= active ? 'active' : '' %>" href="<%= item[0] %>">
+      <span class="material-symbols-outlined"><%= item[1] %></span>
+      <small><%= item[2] %></small>
+    </a>
+  <% }) %>
+</nav>
+<% } %>

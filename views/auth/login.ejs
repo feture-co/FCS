@@ -1,0 +1,59 @@
+<section class="login-split">
+  <div class="login-hero">
+    <div class="brand-block light">
+      <span class="brand-icon material-symbols-outlined">account_balance</span>
+      <span><strong>Future Co-Operative Socitey</strong><small>Future Co-Operative Socitey (FCS)</small></span>
+    </div>
+    <div class="finance-visual">
+      <div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div><div class="bar b4"></div>
+      <span class="material-symbols-outlined">show_chart</span>
+    </div>
+    <h1>আপনার ভবিষ্যৎ গড়ুন আমাদের সাথে</h1>
+    <p>সহজ সঞ্চয়, স্বচ্ছ হিসাব এবং নিরাপদ বিনিয়োগ ব্যবস্থাপনার আধুনিক প্ল্যাটফর্ম।</p>
+  </div>
+  <div class="login-panel-wrap">
+    <div class="auth-card glass-card">
+      <div class="text-center d-md-none mb-4">
+        <span class="brand-icon material-symbols-outlined">account_balance</span>
+        <h1 class="h4 text-primary fw-bold mt-2">FCS</h1>
+      </div>
+      <h2 class="fw-bold mb-1">স্বাগতম!</h2>
+      <p class="text-muted mb-4">আপনার অ্যাকাউন্টে লগইন করতে তথ্য দিন।</p>
+      <form method="post" action="/login">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="mb-3 input-icon">
+          <label class="form-label">ইমেইল অথবা মোবাইল নম্বর</label>
+          <span class="material-symbols-outlined">mail</span>
+          <input class="form-control" type="text" name="email" placeholder="you@example.com অথবা ০১XXXXXXXXX" required>
+        </div>
+        <div class="mb-3 input-icon" style="position: relative;">
+          <div class="d-flex justify-content-between">
+            <label class="form-label">পাসওয়ার্ড</label>
+            <a href="/forgot-password">পাসওয়ার্ড ভুলে গেছেন?</a>
+          </div>
+          <span class="material-symbols-outlined">lock</span>
+          <input class="form-control" type="password" name="password" id="passwordInput" placeholder="••••••••" style="padding-right: 48px;" required>
+          <button type="button" onclick="togglePassword()" style="position: absolute; right: 12px; bottom: 8px; border: none; background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 30px;">
+            <span class="material-symbols-outlined" id="passwordToggleIcon">visibility</span>
+          </button>
+        </div>
+        <label class="remember-row mb-4"><input type="checkbox" name="remember"> আমাকে মনে রাখুন</label>
+        <button class="btn btn-primary btn-lg w-100">লগইন করুন <span class="material-symbols-outlined">arrow_forward</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  function togglePassword() {
+    const input = document.getElementById('passwordInput');
+    const icon = document.getElementById('passwordToggleIcon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.textContent = 'visibility_off';
+    } else {
+      input.type = 'password';
+      icon.textContent = 'visibility';
+    }
+  }
+</script>

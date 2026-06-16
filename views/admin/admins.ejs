@@ -1,0 +1,199 @@
+<div class="page-heading">
+  <div>
+    <p>সিস্টেমের অ্যাডমিনিস্ট্রেটরদের তালিকা ও নতুন অ্যাকাউন্ট তৈরি</p>
+    <h1>অ্যাডমিন ব্যবস্থাপনা</h1>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAdmin" id="btnAddAdmin">
+    <span class="material-symbols-outlined">person_add</span> নতুন অ্যাডমিন
+  </button>
+</div>
+
+<!-- Bento Top Stats Grid -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">admin_panel_settings</span></div>
+      </div>
+      <span>মোট অ্যাডমিন</span>
+      <strong id="adminsCount"><%= bn(admins.length) %> জন</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Filters Bento -->
+<div class="row g-3 panel mb-4">
+  <div class="col-md-12">
+    <div class="input-icon w-100" style="position: relative;">
+      <span class="material-symbols-outlined" style="position: absolute; left: 12px; bottom: 12px; color: var(--muted);">search</span>
+      <input class="form-control" style="padding-left: 40px;" id="searchInput" placeholder="নাম, ইমেইল বা মোবাইল নম্বর দিয়ে খুঁজুন..." type="text"/>
+    </div>
+  </div>
+</div>
+
+<!-- Premium Table Section -->
+<div class="panel table-panel">
+  <div class="table-responsive">
+    <table class="table data-table align-middle" id="adminsTable">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>নাম</th>
+          <th>ইমেইল</th>
+          <th>মোবাইল নম্বর</th>
+          <th>সর্বশেষ লগইন</th>
+          <th class="text-center">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% admins.forEach(a => { %>
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <div class="avatar-circle" style="width: 38px; height: 38px; font-size: 16px; border-radius: 50%;">
+                  <%= a.name.substring(0, 1) %>
+                </div>
+                <div>
+                  <strong><%= a.name %></strong>
+                  <% if (a.id === user.id) { %>
+                    <span class="badge bg-primary-subtle text-primary ms-1" style="font-size: 10px;">আপনি</span>
+                  <% } %>
+                </div>
+              </div>
+            </td>
+            <td><%= a.email %></td>
+            <td><%= a.mobile || '---' %></td>
+            <td><%= a.lastLoginAt ? new Date(a.lastLoginAt).toLocaleString('bn-BD') : 'কখনো নয়' %></td>
+            <td class="text-center">
+              <div class="d-flex justify-content-center gap-2">
+                <button class="btn btn-sm btn-outline-primary btn-edit-admin"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editAdmin" 
+                        data-id="<%= a.id %>"
+                        data-name="<%= a.name %>"
+                        data-mobile="<%= a.mobile || '' %>"
+                        data-email="<%= a.email %>"
+                        style="font-size: 12px; padding: 4px 8px;">
+                  Edit
+                </button>
+                <% if (a.id !== user.id) { %>
+                  <form method="post" action="/admin/admins/<%= a.id %>/delete" class="d-inline confirm-form">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button class="btn btn-sm btn-outline-danger" style="font-size: 12px; padding: 4px 8px;">Delete</button>
+                  </form>
+                <% } else { %>
+                  <button class="btn btn-sm btn-outline-secondary" style="font-size: 12px; padding: 4px 8px;" disabled>Delete</button>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Admin Modal -->
+<div class="modal fade" id="addAdmin" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" method="post" action="/admin/admins?_csrf=<%= csrfToken %>" id="addAdminForm">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">নতুন অ্যাডমিন অ্যাকাউন্ট তৈরি</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">অ্যাডমিনের নাম</label>
+          <input class="form-control" name="name" placeholder="যেমন: আব্দুল করিম" required id="addAdminName">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ইমেইল ঠিকানা</label>
+          <input class="form-control" name="email" type="email" placeholder="example@mail.com" required id="addAdminEmail">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">মোবাইল নম্বর</label>
+          <input class="form-control" name="mobile" placeholder="০১৭XXXXXXXX" required id="addAdminMobile">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">পাসওয়ার্ড</label>
+          <input class="form-control" name="password" type="password" placeholder="••••••••" required value="12345678" id="addAdminPassword">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-primary">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Admin Modal -->
+<div class="modal fade" id="editAdmin" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form class="modal-content" id="editAdminForm" method="post" action="">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="modal-header">
+        <h5 class="modal-title font-bold text-primary">অ্যাডমিন তথ্য সংশোধন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">অ্যাডমিনের নাম</label>
+          <input class="form-control" name="name" id="editAdminName" placeholder="যেমন: আব্দুল করিম" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">ইমেইল ঠিকানা</label>
+          <input class="form-control" name="email" id="editAdminEmail" type="email" placeholder="example@mail.com" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">মোবাইল নম্বর</label>
+          <input class="form-control" name="mobile" id="editAdminMobile" placeholder="০১৭XXXXXXXX" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">নতুন পাসওয়ার্ড (ঐচ্ছিক, পরিবর্তন করতে চাইলে লিখুন)</label>
+          <input class="form-control" name="password" id="editAdminPassword" type="password" placeholder="••••••••">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">বাতিল</button>
+        <button type="submit" class="btn btn-success">সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#adminsTable tbody tr');
+
+    function filterTable() {
+      const searchVal = searchInput.value.toLowerCase().trim();
+
+      tableRows.forEach(row => {
+        const textContent = row.textContent.toLowerCase();
+        let show = true;
+        if (searchVal && !textContent.includes(searchVal)) show = false;
+        row.style.display = show ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+
+    // Edit admin click handler
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-edit-admin');
+      if (!btn) return;
+
+      const data = btn.dataset;
+      const form = document.getElementById('editAdminForm');
+      const csrfToken = form.querySelector('input[name="_csrf"]').value;
+      form.action = `/admin/admins/${data.id}?_csrf=${csrfToken}`;
+
+      document.getElementById('editAdminName').value = data.name || '';
+      document.getElementById('editAdminMobile').value = data.mobile || '';
+      document.getElementById('editAdminEmail').value = data.email || '';
+      document.getElementById('editAdminPassword').value = '';
+    });
+  });
+</script>

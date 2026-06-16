@@ -1,0 +1,37 @@
+const router = require('express').Router();
+const admin = require('../controllers/adminController');
+const { requireAuth, requireRole } = require('../middleware/auth');
+const upload = require('../middleware/upload');
+const { handleValidation, memberRules, depositRules, moneyRules, adminRules } = require('../middleware/validators');
+
+router.use(requireAuth, requireRole('admin'));
+router.get('/dashboard', admin.dashboard);
+router.get('/members', admin.members);
+router.post('/members', upload.single('photo'), memberRules, handleValidation, admin.storeMember);
+router.post('/members/:id', upload.single('photo'), memberRules, handleValidation, admin.updateMember);
+router.post('/members/:id/delete', admin.deleteMember);
+router.post('/members/:id/status', admin.setMemberStatus);
+router.get('/admins', admin.admins);
+router.post('/admins', adminRules, handleValidation, admin.storeAdmin);
+router.post('/admins/:id', adminRules, handleValidation, admin.updateAdmin);
+router.post('/admins/:id/delete', admin.deleteAdmin);
+router.get('/deposits', admin.deposits);
+router.post('/deposits', depositRules, handleValidation, admin.storeDeposit);
+router.post('/deposits/:id', depositRules, handleValidation, admin.updateDeposit);
+router.post('/deposits/requests/:id/approve', admin.approveDepositRequest);
+router.post('/deposits/requests/:id/reject', admin.rejectDepositRequest);
+router.get('/dues', admin.dues);
+router.post('/dues/remind-all', admin.sendBulkReminders);
+router.post('/dues/remind/:memberId', admin.sendIndividualReminder);
+router.post('/settings/smtp', admin.updateSMTPConfig);
+router.get('/investments', admin.investments);
+router.post('/investments', moneyRules, handleValidation, admin.storeInvestment);
+router.post('/investments/:id', admin.updateInvestment);
+router.post('/investments/:id/delete', admin.deleteInvestment);
+router.get('/profits', admin.profits);
+router.get('/profits/share', admin.profitShare);
+router.post('/profits', moneyRules, handleValidation, admin.storeProfit);
+router.get('/notices', admin.notices);
+router.post('/notices', admin.storeNotice);
+
+module.exports = router;

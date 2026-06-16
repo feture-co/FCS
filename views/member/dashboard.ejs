@@ -1,0 +1,250 @@
+<div class="page-heading">
+  <div>
+    <p>স্বাগতম, <%= member.name %></p>
+    <h1>আমার ড্যাশবোর্ড</h1>
+  </div>
+  <button class="btn btn-outline-primary" onclick="enablePush()">
+    <span class="material-symbols-outlined">notifications_active</span> নোটিফিকেশন চালু করুন
+  </button>
+</div>
+
+<!-- Reminder Alert for Dues -->
+<% if (totalDue > 0) { %>
+  <div class="bg-primary-container text-on-primary-container p-4 rounded-xl flex flex-column flex-md-row align-items-md-center justify-content-between shadow-sm border-l-4 border-primary mb-4" style="background-color: var(--secondary-container) !important; color: #002110 !important; border-left: 5px solid var(--secondary) !important;">
+    <div class="d-flex align-items-center gap-3 mb-3 mb-md-0">
+      <span class="material-symbols-outlined text-3xl">event_upcoming</span>
+      <div>
+        <p class="font-title-lg text-title-lg m-0 fw-bold">বকেয়া পরিশোধের নোটিশ</p>
+        <p class="font-body-md text-body-md m-0 opacity-90">
+          আপনার মোট বকেয়া কিস্তির পরিমাণ <strong><%= money(totalDue) %></strong> টাকা। 
+          <% if (typeof pendingDues !== 'undefined' && pendingDues.length > 0) { 
+            const monthNames = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+            const startMonth = pendingDues[0];
+            const endMonth = pendingDues[pendingDues.length - 1];
+            const startMonthName = monthNames[startMonth.month - 1];
+            const endMonthName = monthNames[endMonth.month - 1];
+            let dueMonthsStr = '';
+            if (pendingDues.length === 1) {
+              dueMonthsStr = `${startMonthName}, ${bnYear(startMonth.year)}`;
+            } else {
+              dueMonthsStr = `${startMonthName}, ${bnYear(startMonth.year)} - ${endMonthName}, ${bnYear(endMonth.year)}`;
+            }
+          %>
+            বকেয়া মাস: <strong><%= dueMonthsStr %></strong>। 
+          <% } %>
+          অবিলম্বে জমা করার জন্য অনুরোধ করা হচ্ছে।
+        </p>
+      </div>
+    </div>
+    <a href="/member/deposits" class="btn btn-primary bg-on-secondary-container text-secondary-container" style="background-color: #002110 !important; color: var(--secondary-container) !important; border: none;">জমা করুন</a>
+  </div>
+<% } %>
+
+<!-- Member Stats Bento Grid -->
+<div class="row g-3 mb-4">
+  <div class="col-md">
+    <div class="stat-card">
+      <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">savings</span></div>
+      <span>আমার মোট জমা</span>
+      <strong><%= money(totalDeposit) %></strong>
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="stat-card">
+      <div class="stat-icon <%= totalDue > 0 ? 'danger' : 'success' %>" style="background: <%= totalDue > 0 ? 'rgba(186,26,26,0.1)' : 'rgba(0,109,65,0.1)' %>; color: <%= totalDue > 0 ? 'var(--error)' : 'var(--secondary)' %>;"><span class="material-symbols-outlined">history_toggle_off</span></div>
+      <span>আমার বকেয়া</span>
+      <strong class="<%= totalDue > 0 ? 'text-danger' : 'text-success' %>"><%= money(totalDue) %></strong>
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="stat-card">
+      <div class="stat-icon success" style="background: rgba(144,244,183,0.2); color: var(--secondary);"><span class="material-symbols-outlined">pie_chart</span></div>
+      <span>আমার শেয়ার</span>
+      <strong><%= bn(member.shares) %> টি</strong>
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="stat-card">
+      <div class="stat-icon success" style="background: rgba(0, 109, 65, 0.1); color: var(--secondary);"><span class="material-symbols-outlined">payments</span></div>
+      <span>আমার লাভ</span>
+      <strong><%= money(totalProfit) %></strong>
+    </div>
+  </div>
+  <div class="col-md">
+    <div class="stat-card" style="background: var(--primary); color: white;">
+      <div class="stat-icon" style="background: rgba(255,255,255,0.2); color: white;"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+      <span style="color: rgba(255,255,255,0.8) !important;">আমার ব্যালেন্স</span>
+      <strong><%= money(balance) %></strong>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Recent Deposits Table -->
+  <div class="col-lg-6">
+    <div class="panel table-panel h-100">
+      <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+        <h2 class="m-0" style="font-size: 18px; font-weight: 800;">সাম্প্রতিক জমা বিবরণী</h2>
+        <a class="text-primary font-label-md text-label-md hover:underline fw-bold" href="/member/deposits">সব দেখুন</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr style="background-color: var(--surface-low); color: var(--muted);">
+              <th>জমার তারিখ</th>
+              <th>বিবরণ</th>
+              <th class="text-end">পরিমাণ</th>
+              <th class="text-center">স্ট্যাটাস</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (recentDeposits.length === 0) { %>
+              <tr>
+                <td colspan="4" class="text-center py-4 text-muted">আপনার কোনো জমার রেকর্ড নেই।</td>
+              </tr>
+            <% } %>
+            <% recentDeposits.forEach(d => { %>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td><%= d.depositDate ? new Date(d.depositDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) : '---' %></td>
+                <td><%= ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'][d.month - 1] || d.month %> মাসের কিস্তি</td>
+                <td class="text-end fw-bold text-primary"><%= money(d.amount) %></td>
+                <td class="text-center">
+                  <span class="status-pill <%= d.status %>">
+                    <%= d.status === 'paid' ? 'সফল' : d.status === 'partial' ? 'আংশিক' : 'বকেয়া' %>
+                  </span>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Due Installments Table -->
+  <div class="col-lg-6">
+    <div class="panel table-panel h-100">
+      <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+        <h2 class="m-0" style="font-size: 18px; font-weight: 800;">বকেয়া কিস্তি বিবরণী</h2>
+        <a class="text-danger font-label-md text-label-md hover:underline fw-bold" href="/member/deposits">জমা করুন</a>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr style="background-color: var(--surface-low); color: var(--muted);">
+              <th>মাস & বছর</th>
+              <th>বিবরণ</th>
+              <th class="text-end">পরিমাণ</th>
+              <th class="text-center">স্ট্যাটাস</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (pendingDues.length === 0) { %>
+              <tr>
+                <td colspan="4" class="text-center py-4 text-success fw-bold">
+                  <span class="material-symbols-outlined align-middle" style="font-size: 18px;">check_circle</span> আপনার কোনো বকেয়া কিস্তি নেই।
+                </td>
+              </tr>
+            <% } %>
+            <% pendingDues.forEach(d => { 
+              const monthName = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'][d.month - 1];
+            %>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td><%= monthName %>, <%= bnYear(d.year) %></td>
+                <td>মাসিক কিস্তির বকেয়া</td>
+                <td class="text-end fw-bold text-danger"><%= money(d.currentDue) %></td>
+                <td class="text-center">
+                  <span class="status-pill due">বকেয়া</span>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Active Investments / Public Ongoing Projects -->
+  <div class="col-lg-4">
+    <div class="panel h-100 d-flex flex-column justify-content-between">
+      <div>
+        <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 20px;">চলমান বিনিয়োগ প্রকল্পসমূহ</h2>
+        <div class="d-flex flex-column gap-3">
+          <% if (activeInvestments.length === 0) { %>
+            <div class="text-center text-muted py-4">কোনো সক্রিয় বিনিয়োগ প্রকল্প নেই।</div>
+          <% } %>
+          <% activeInvestments.forEach(i => { %>
+            <div class="p-3 rounded-3 border d-flex items-center gap-3" style="background-color: var(--surface-low);">
+              <div class="avatar-circle" style="width: 40px; height: 40px; font-size: 16px; border-radius: 8px; flex-shrink: 0;">
+                <%= i.title.substring(0, 1) %>
+              </div>
+              <div class="flex-grow-1" style="min-width: 0;">
+                <p class="m-0 fw-bold text-truncate" style="font-size: 14px;"><%= i.title %></p>
+                <div class="d-flex justify-content-between mt-1" style="font-size: 11px; color: var(--muted);">
+                  <span>ক্যাটাগরি: <%= i.category %></span>
+                  <span>পরিমাণ: <%= money(i.amount) %></span>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+      <button class="btn btn-outline-primary w-full mt-3" onclick="location.href='/member/statement'">
+        বিনিয়োগ স্টেটমেন্ট দেখুন
+      </button>
+    </div>
+  </div>
+
+  <!-- Notice Board -->
+  <div class="col-lg-4">
+    <div class="panel h-100 relative overflow-hidden group">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="material-symbols-outlined text-primary">campaign</span>
+        <h2 class="m-0" style="font-size: 18px; font-weight: 800;">সর্বশেষ নোটিশ</h2>
+      </div>
+      <div class="space-y-3">
+        <% if (recentNotices.length === 0) { %>
+          <div class="text-muted py-3">কোনো নোটিশ নেই।</div>
+        <% } %>
+        <% recentNotices.forEach(n => { %>
+          <div class="border-start border-primary border-4 ps-3 py-1 mb-2">
+            <strong><%= n.title %></strong>
+            <p class="m-0 text-muted" style="font-size: 13px;"><%= n.description %></p>
+            <small class="text-primary d-block mt-1" style="font-size: 11px;">
+              <%= n.publishDate ? new Date(n.publishDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) : '' %>
+            </small>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Support Card -->
+  <div class="col-lg-4">
+    <div class="panel h-100 d-flex flex-column justify-content-between">
+      <div>
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-primary">support_agent</span>
+          <h2 class="m-0" style="font-size: 18px; font-weight: 800;">সহায়তা প্রয়োজন?</h2>
+        </div>
+        <p class="text-muted" style="font-size: 14px;">ফান্ড বা কিস্তি জমা সংক্রান্ত যেকোনো জিজ্ঞাসায় আমাদের অ্যাডমিনের সাথে সরাসরি যোগাযোগ করুন।</p>
+      </div>
+      <div class="d-flex gap-2 mt-3">
+        <button class="btn btn-primary flex-grow-1" onclick="location.href='tel:01650078037'">
+          <span class="material-symbols-outlined" style="font-size: 18px;">call</span> কল করুন
+        </button>
+        <button class="btn btn-outline-success flex-grow-1" onclick="window.open('https://wa.me/88017994290', '_blank')">
+          <i class="bi bi-whatsapp"></i> মেসেজ পাঠান
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function enablePush() {
+    Swal.fire('পুশ নোটিফিকেশন', 'আপনার ডিভাইসে Future Co-Operative Socitey (FCS) এর নোটিফিকেশন সক্রিয় করা হচ্ছে।', 'success');
+  }
+</script>

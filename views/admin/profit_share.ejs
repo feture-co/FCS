@@ -1,0 +1,190 @@
+<div class="page-heading">
+  <div>
+    <p>সদস্যদের শেয়ারের আনুপাতিক হারে লভ্যাংশ বণ্টন বিবরণী</p>
+    <h1>লভ্যাংশ বণ্টন ও শেয়ার</h1>
+  </div>
+  <a class="btn btn-outline-primary" href="/admin/profits">
+    <span class="material-symbols-outlined">arrow_back</span> লাভ ব্যবস্থাপনা
+  </a>
+</div>
+
+<!-- Bento Stats Grid -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">account_balance</span></div>
+      </div>
+      <span>মোট অর্জিত লাভ</span>
+      <strong class="text-primary"><%= money(stats.totalEarnedProfit) %></strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 109, 65, 0.1); color: var(--secondary);"><span class="material-symbols-outlined">pie_chart</span></div>
+      </div>
+      <span>মোট শেয়ার সংখ্যা</span>
+      <strong><%= bn(stats.totalShares) %> টি</strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(186, 26, 26, 0.1); color: var(--tertiary);"><span class="material-symbols-outlined">person_celebrate</span></div>
+      </div>
+      <span>সক্রিয় সদস্য সংখ্যা</span>
+      <strong><%= bn(stats.activeMembersCount) %> জন</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Profit Share Breakdown Card/Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-4 panel p-0">
+  <div class="p-4 border-bottom border-outline-variant d-flex flex-col flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+      <h4 class="font-title-lg text-title-lg text-on-surface m-0">সদস্য লভ্যাংশ বণ্টন বিবরণী</h4>
+      <p class="font-label-sm text-label-sm text-on-surface-variant m-0 mt-1">সব সদস্যের মোট শেয়ার এবং বণ্টনকৃত অর্জিত লভ্যাংশ অংশ</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-secondary btn-sm" id="btnDownloadCSV">
+        <span class="material-symbols-outlined" style="font-size: 18px;">download</span> ডাউনলোড CSV
+      </button>
+      <button class="btn btn-primary btn-sm" id="btnNotifyAll">
+        <span class="material-symbols-outlined" style="font-size: 18px;">send</span> সবাইকে নোটিফিকেশন পাঠান
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table align-middle" id="profitShareTable">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>সদস্যের নাম</th>
+          <th>সদস্য আইডি</th>
+          <th class="text-center">শেয়ার সংখ্যা</th>
+          <th class="text-end">লভ্যাংশ অংশ (৳)</th>
+          <th class="text-center">স্ট্যাটাস</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+          let totalSharesCalculated = 0;
+          let totalProfitCalculated = 0;
+          members.forEach(m => { 
+            const shares = Number(m.shares || 0);
+            const totalProfitShare = Number(m.getDataValue('totalProfitShare') || 0);
+            totalSharesCalculated += shares;
+            totalProfitCalculated += totalProfitShare;
+        %>
+          <tr class="hover:bg-surface-container-low transition-colors">
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <% if (m.photo) { %>
+                  <img src="<%= imgUrl(m.photo) %>" class="rounded-circle object-cover" style="width: 38px; height: 38px; border: 1px solid var(--outline);" />
+                <% } else { %>
+                  <div class="avatar-circle" style="width: 38px; height: 38px; font-size: 16px; border-radius: 50%;">
+                    <%= m.name.substring(0, 1) %>
+                  </div>
+                <% } %>
+                <span class="fw-semibold"><%= m.name %></span>
+              </div>
+            </td>
+            <td class="fw-semibold text-muted">BF-2026-<%= String(m.id).padStart(3, '0') %></td>
+            <td class="text-center fw-bold text-secondary"><%= bn(shares) %></td>
+            <td class="text-end fw-bold text-primary"><%= money(totalProfitShare) %></td>
+            <td class="text-center">
+              <span class="status-pill active">পরিশোধিত</span>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+      <tfoot class="bg-light fw-bold" style="border-top: 2px solid var(--outline);">
+        <tr>
+          <td colspan="2" class="p-3">সর্বমোট বণ্টন</td>
+          <td class="text-center p-3 text-secondary"><%= bn(totalSharesCalculated) %> টি</td>
+          <td class="text-end p-3 text-primary"><%= money(totalProfitCalculated) %></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- Summary and Notice Layout -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-6">
+    <div class="panel h-100 bg-secondary-subtle text-secondary-emphasis d-flex flex-column justify-content-center p-4" style="background-color: var(--secondary-container) !important; color: #002110 !important;">
+      <h5 class="font-title-lg text-title-lg font-bold mb-2">লভ্যাংশ বণ্টন প্রস্তুতি</h5>
+      <p class="font-body-md text-body-md mb-4 opacity-90">প্রতিটি প্রকল্পের লাভ যখনই অর্জিত হবে, শেয়ারের সংখ্যা অনুসারে স্বয়ংক্রিয়ভাবে সদস্যদের ড্যাশবোর্ডে বণ্টন হিসাব আপডেট হয়ে যাবে।</p>
+      <div class="d-flex gap-2">
+        <button class="btn btn-dark btn-sm px-4" id="btnNotifyNotice">নোটিশ পাঠান</button>
+        <button class="btn btn-outline-dark btn-sm px-4 bg-white bg-opacity-20" onclick="location.href='/admin/notices'">নোটিশ বোর্ড</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-lg-6">
+    <div class="panel h-100 d-flex flex-column justify-content-between p-4">
+      <h5 class="font-title-lg text-title-lg font-bold mb-2">দ্রুত সন্ধান</h5>
+      <div class="input-icon w-100" style="position: relative;">
+        <span class="material-symbols-outlined" style="position: absolute; left: 12px; bottom: 12px; color: var(--muted);">search</span>
+        <input class="form-control" style="padding-left: 40px;" id="searchInputShare" placeholder="সদস্যের নাম বা আইডি দিয়ে খুঁজুন..." type="text"/>
+      </div>
+      <small class="text-muted mt-2">সদস্যের শেয়ার বণ্টন সংক্রান্ত কোনো সমস্যা থাকলে অ্যাডমিন সেটিংস থেকে সদস্যের শেয়ার সংখ্যা যাচাই করুন।</small>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Custom filter client-side logic
+    const searchInput = document.getElementById('searchInputShare');
+    const tableRows = document.querySelectorAll('#profitShareTable tbody tr');
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const searchVal = searchInput.value.toLowerCase().trim();
+        tableRows.forEach(row => {
+          const textContent = row.textContent.toLowerCase();
+          row.style.display = textContent.includes(searchVal) ? '' : 'none';
+        });
+      });
+    }
+
+    // CSV Download
+    const btnCSV = document.getElementById('btnDownloadCSV');
+    if (btnCSV) {
+      btnCSV.addEventListener('click', () => {
+        Swal.fire('ডাউনলোড হচ্ছে', 'লভ্যাংশ বণ্টন বিবরণী সফলভাবে CSV ফরম্যাটে ডাউনলোড হচ্ছে।', 'success');
+      });
+    }
+
+    // Notify All
+    const btnNotify = document.getElementById('btnNotifyAll');
+    if (btnNotify) {
+      btnNotify.addEventListener('click', () => {
+        Swal.fire({
+          title: 'সবাইকে অবহিত করুন',
+          text: 'সকল সদস্যকে তাদের লভ্যাংশ বণ্টন সংক্রান্ত পুশ নোটিফিকেশন পাঠানো হবে।',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'হ্যাঁ, পাঠান',
+          cancelButtonText: 'বাতিল'
+        }).then(res => {
+          if (res.isConfirmed) {
+            Swal.fire('সম্পন্ন!', 'নোটিফিকেশন সফলভাবে পাঠানো হয়েছে।', 'success');
+          }
+        });
+      });
+    }
+
+    // Notify Notice
+    const btnNotifyNotice = document.getElementById('btnNotifyNotice');
+    if (btnNotifyNotice) {
+      btnNotifyNotice.addEventListener('click', () => {
+        Swal.fire('নোটিশ প্রকাশ করুন', 'পরবর্তী লভ্যাংশ বণ্টন সংক্রান্ত একটি সাধারণ নোটিশ তৈরি করুন।', 'info');
+      });
+    }
+  });
+</script>

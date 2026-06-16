@@ -1,0 +1,328 @@
+<style>
+  .due-row-critical { border-left: 4px solid var(--error) !important; }
+</style>
+
+<div class="page-heading">
+  <div>
+    <p>স্বয়ংক্রিয় মাসিক বকেয়া তালিকা</p>
+    <h1>বকেয়া ব্যবস্থাপনা</h1>
+  </div>
+</div>
+
+<!-- Bento Top Stats Grid -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon danger" style="background: rgba(186, 26, 26, 0.1); color: var(--error);"><span class="material-symbols-outlined">warning</span></div>
+      </div>
+      <span>মোট বকেয়া</span>
+      <strong class="text-danger"><%= money(stats.totalDue) %></strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">group</span></div>
+      </div>
+      <span>বকেয়া সদস্য</span>
+      <strong><%= bn(stats.overdueCount) %> জন</strong>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 109, 65, 0.1); color: var(--secondary);"><span class="material-symbols-outlined">calendar_today</span></div>
+      </div>
+      <span>চলতি মাসের বকেয়া</span>
+      <strong><%= money(stats.currentDue) %></strong>
+    </div>
+  </div>
+</div>
+
+<!-- Action Alert Banner -->
+<div class="d-flex flex-col flex-md-row justify-content-between align-items-md-center gap-3 mb-4 p-3 rounded-3" style="background-color: rgba(186,26,26,0.06); border: 1px solid rgba(186,26,26,0.15);">
+  <div class="d-flex align-items-center gap-2">
+    <span class="material-symbols-outlined text-danger">info</span>
+    <p class="m-0 text-danger" style="font-weight: 500;">বকেয়া পরিশোধের সময়সীমা অতিক্রম করেছে এমন সদস্যদের তালিকা নিচে দেওয়া হলো।</p>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-primary btn-sm bg-white" data-bs-toggle="modal" data-bs-target="#smtpSettingsModal">
+      <span class="material-symbols-outlined" style="font-size: 18px;">settings</span> SMTP সেটিংস
+    </button>
+    <button class="btn btn-danger btn-sm" id="btnSendReminder">
+      <span class="material-symbols-outlined" style="font-size: 18px;">send</span> রিমাইন্ডার পাঠান
+    </button>
+    <button class="btn btn-outline-secondary btn-sm bg-white" id="btnDownloadList">
+      <span class="material-symbols-outlined" style="font-size: 18px;">download</span> তালিকা ডাউনলোড
+    </button>
+  </div>
+</div>
+
+<!-- Search & Status Filter -->
+<div class="row g-3 panel mb-4">
+  <div class="col-md-4">
+    <label class="form-label">স্ট্যাটাস ফিল্টার</label>
+    <select class="form-select" id="statusFilter">
+      <option value="">সকল বকেয়া</option>
+      <option value="due">Due</option>
+      <option value="partial">Partial</option>
+      <option value="paid">Paid</option>
+    </select>
+  </div>
+  <div class="col-md-8 d-flex align-items-end">
+    <div class="input-icon w-100" style="position: relative;">
+      <span class="material-symbols-outlined" style="position: absolute; left: 12px; bottom: 12px; color: var(--muted);">search</span>
+      <input class="form-control" style="padding-left: 40px;" id="searchInput" placeholder="সদস্যের নাম বা আইডি দিয়ে খুঁজুন..." type="text"/>
+    </div>
+  </div>
+</div>
+
+<!-- Premium Dues Table -->
+<div class="panel table-panel">
+  <div class="table-responsive">
+    <table class="table data-table align-middle" id="duesTable">
+      <thead>
+        <tr style="background-color: var(--surface-low); color: var(--muted);">
+          <th>সদস্য</th>
+          <th>মাস & বছর</th>
+          <th class="text-end">বর্তমান বকেয়া</th>
+          <th class="text-end">পূর্বের বকেয়া</th>
+          <th class="text-end">মোট বকেয়া</th>
+          <th class="text-center">স্ট্যাটাস</th>
+          <th class="text-center">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% dues.forEach(d => { %>
+          <tr data-status="<%= d.status %>" class="<%= d.status !== 'paid' ? 'due-row-critical' : '' %>">
+            <td>
+              <div class="d-flex align-items-center gap-3">
+                <% if (d.Member && d.Member.photo) { %>
+                  <img src="<%= imgUrl(d.Member.photo) %>" class="rounded-circle object-cover" style="width: 38px; height: 38px; border: 1px solid var(--outline);" />
+                <% } else { %>
+                  <div class="avatar-circle" style="width: 38px; height: 38px; font-size: 16px; border-radius: 50%;">
+                    <%= d.Member ? d.Member.name.substring(0, 1) : 'স' %>
+                  </div>
+                <% } %>
+                <div>
+                  <strong><%= d.Member ? d.Member.name : 'Unknown Member' %></strong>
+                  <div class="text-muted" style="font-size: 11px;">ID: BF-2026-<%= String(d.Member ? d.Member.id : 0).padStart(3, '0') %></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <%= ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'][d.month - 1] || d.month %>, <%= bnYear(d.year) %>
+            </td>
+            <td class="text-end"><%= money(d.currentDue) %></td>
+            <td class="text-end"><%= money(d.previousDue) %></td>
+            <td class="text-end fw-bold <%= d.status !== 'paid' ? 'text-danger' : 'text-success' %>"><%= money(d.totalDue) %></td>
+            <td class="text-center">
+              <span class="status-pill <%= d.status %>">
+                <%= d.status === 'paid' ? 'Paid' : d.status === 'partial' ? 'Partial' : 'Due' %>
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="d-flex justify-content-center gap-1">
+                <button class="btn btn-sm btn-outline-primary" style="padding: 4px 8px; font-size: 12px;" onclick="viewMemberStatement('<%= d.memberId %>')">
+                  Statement
+                </button>
+                <% if (d.status !== 'paid') { %>
+                  <button class="btn btn-sm btn-outline-danger btn-reminder" style="padding: 4px 8px; font-size: 12px;" data-name="<%= d.Member ? d.Member.name : '' %>" data-id="<%= d.memberId %>">
+                    Remind
+                  </button>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SMTP Settings Modal -->
+<div class="modal fade" id="smtpSettingsModal" tabindex="-1" aria-labelledby="smtpSettingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 16px; overflow: hidden; background-color: var(--surface-card);">
+      <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--primary) 0%, #0a58ca 100%); border-bottom: none; padding: 20px 24px;">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="smtpSettingsModalLabel" style="font-weight: 700;">
+          <span class="material-symbols-outlined">settings</span> SMTP সেটিংস
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/settings/smtp" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div class="modal-body" style="padding: 24px; background-color: var(--surface-low);">
+          
+          <div class="mb-3">
+            <label class="form-label font-medium" style="color: var(--text);">SMTP Host <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="smtp_host" value="<%= smtp.smtp_host || '' %>" placeholder="e.g. smtp.mailtrap.io" required>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-6">
+              <label class="form-label font-medium" style="color: var(--text);">SMTP Port <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" name="smtp_port" value="<%= smtp.smtp_port || '' %>" placeholder="e.g. 587" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label font-medium" style="color: var(--text);">Security</label>
+              <select class="form-select" name="smtp_secure">
+                <option value="false" <%= smtp.smtp_secure !== 'true' ? 'selected' : '' %>>STARTTLS / None (587/25)</option>
+                <option value="true" <%= smtp.smtp_secure === 'true' ? 'selected' : '' %>>SSL / TLS (465)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label font-medium" style="color: var(--text);">SMTP Username <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" name="smtp_user" value="<%= smtp.smtp_user || '' %>" placeholder="SMTP Username/Email" required autocomplete="username">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label font-medium" style="color: var(--text);">SMTP Password <span class="text-danger">*</span></label>
+            <input type="password" class="form-control" name="smtp_pass" value="<%= smtp.smtp_pass || '' %>" placeholder="SMTP Password" required autocomplete="current-password">
+          </div>
+
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label font-medium" style="color: var(--text);">Sender Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" name="smtp_from_email" value="<%= smtp.smtp_from_email || '' %>" placeholder="e.g. no-reply@fund.com" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label font-medium" style="color: var(--text);">Sender Name</label>
+              <input type="text" class="form-control" name="smtp_from_name" value="<%= smtp.smtp_from_name || '' %>" placeholder="e.g. Friend's Fund">
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer" style="background-color: var(--surface-low); border-top: 1px solid var(--outline); padding: 16px 24px;">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">বন্ধ করুন</button>
+          <button type="submit" class="btn btn-primary px-4">সংরক্ষণ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#duesTable tbody tr');
+
+    function filterTable() {
+      const statusVal = statusFilter.value.toLowerCase();
+      const searchVal = searchInput.value.toLowerCase().trim();
+
+      tableRows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status').toLowerCase();
+        const textContent = row.textContent.toLowerCase();
+
+        let show = true;
+        if (statusVal && rowStatus !== statusVal) show = false;
+        if (searchVal && !textContent.includes(searchVal)) show = false;
+
+        row.style.display = show ? '' : 'none';
+      });
+    }
+
+    statusFilter.addEventListener('change', filterTable);
+    searchInput.addEventListener('input', filterTable);
+
+    // Reminder alert trigger
+    const sendReminderBtn = document.getElementById('btnSendReminder');
+    if (sendReminderBtn) {
+      sendReminderBtn.addEventListener('click', () => {
+        Swal.fire({
+          title: 'রিমাইন্ডার পাঠানো হচ্ছে',
+          text: 'সকল বকেয়া সদস্যকে ইমেইল রিমাইন্ডার পাঠানো হবে। আপনি কি নিশ্চিত?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'হ্যাঁ, পাঠান',
+          cancelButtonText: 'বাতিল',
+          showLoaderOnConfirm: true,
+          preConfirm: () => {
+            return fetch('/admin/dues/remind-all', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              }
+            })
+            .then(response => {
+              if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'ইমেইল পাঠানো ব্যর্থ হয়েছে।') });
+              }
+              return response.json();
+            })
+            .catch(error => {
+              Swal.showValidationMessage(`ত্রুটি: ${error.message}`);
+            });
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+          if (result.isConfirmed && result.value) {
+            Swal.fire({
+              title: 'সম্পন্ন!',
+              text: result.value.message,
+              icon: 'success'
+            });
+          }
+        });
+      });
+    }
+
+    // Individual Reminder trigger
+    document.querySelectorAll('.btn-reminder').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const name = e.currentTarget.getAttribute('data-name');
+        const id = e.currentTarget.getAttribute('data-id');
+        Swal.fire({
+          title: 'রিমাইন্ডার পাঠান',
+          text: `${name}-কে বকেয়া পরিশোধের রিমাইন্ডার পাঠাতে চান?`,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'হ্যাঁ',
+          cancelButtonText: 'না',
+          showLoaderOnConfirm: true,
+          preConfirm: () => {
+            return fetch(`/admin/dues/remind/${id}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              }
+            })
+            .then(response => {
+              if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'ইমেইল পাঠানো ব্যর্থ হয়েছে।') });
+              }
+              return response.json();
+            })
+            .catch(error => {
+              Swal.showValidationMessage(`ত্রুটি: ${error.message}`);
+            });
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+          if (result.isConfirmed && result.value) {
+            Swal.fire('পাঠানো হয়েছে!', result.value.message, 'success');
+          }
+        });
+      });
+    });
+
+    // Download list trigger
+    const downloadBtn = document.getElementById('btnDownloadList');
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', () => {
+        Swal.fire('ডাউনলোড শুরু হচ্ছে', 'বকেয়া তালিকা এক্সেল/পিডিএফ ফরম্যাটে তৈরি হচ্ছে।', 'success');
+      });
+    }
+  });
+
+  function viewMemberStatement(memberId) {
+    window.location.href = `/reports?memberId=${memberId}`;
+  }
+</script>

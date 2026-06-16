@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>বন্ধু ফান্ড - নোটিশ বোর্ড</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdad9",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2d3135",
+                    "on-secondary-fixed": "#002110",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e8",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e0e3e8",
+                    "tertiary-fixed-dim": "#ffb3b2",
+                    "primary-fixed": "#dae2ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#92001f",
+                    "primary": "#0057cd",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d7dadf",
+                    "background": "#f7f9ff",
+                    "tertiary-container": "#dd3645",
+                    "outline-variant": "#c2c6d8",
+                    "surface-container-low": "#f1f4f9",
+                    "on-surface": "#181c20",
+                    "on-tertiary-fixed": "#410008",
+                    "inverse-primary": "#b1c5ff",
+                    "surface-container-high": "#e5e8ee",
+                    "tertiary": "#b91830",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#93f7ba",
+                    "secondary-fixed-dim": "#77da9f",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "surface-tint": "#0057ce",
+                    "outline": "#727787",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed": "#001946",
+                    "on-primary-fixed-variant": "#00419e",
+                    "inverse-on-surface": "#eef1f6",
+                    "on-primary-container": "#ffffff",
+                    "surface-container": "#ebeef3",
+                    "secondary-container": "#90f4b7",
+                    "on-secondary-fixed-variant": "#00522f",
+                    "on-secondary-container": "#007144",
+                    "primary-container": "#0d6efd",
+                    "secondary": "#006d41",
+                    "on-tertiary-container": "#130001",
+                    "on-surface-variant": "#424655",
+                    "on-background": "#181c20"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "card-gap": "24px",
+                    "container-padding-desktop": "32px",
+                    "gutter": "24px",
+                    "container-padding-mobile": "16px",
+                    "sidebar-width": "280px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Noto Sans Bengali"],
+                    "label-sm": ["Noto Sans Bengali"],
+                    "label-md": ["Noto Sans Bengali"],
+                    "display-lg": ["Noto Sans Bengali"],
+                    "title-lg": ["Noto Sans Bengali"],
+                    "headline-md": ["Noto Sans Bengali"],
+                    "headline-lg-mobile": ["Noto Sans Bengali"],
+                    "body-md": ["Noto Sans Bengali"],
+                    "headline-lg": ["Noto Sans Bengali"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "display-lg": ["40px", {"lineHeight": "52px", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Noto Sans Bengali', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="bg-surface shadow-sm docked full-width top-0 z-50 flex justify-between items-center w-full px-4 md:px-8 py-2 h-16 sticky top-0">
+<div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-primary">বন্ধু ফান্ড</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-surface-container-high rounded-full px-4 py-2 items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md" placeholder="নোটিশ খুঁজুন..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors">notifications</button>
+<img alt="ইউজার প্রোফাইল" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI7F4pwWIKlKQ6yA16n24ex0fgQ65WegfbWwCadUTJkriuHHyy1B_voJyutpv-4dPtWUJdprxWBu2dDu_WjIMtzoLV2A7-QlhM2F1_7Rb4Iozif9yFDS_vzIoODK3QVp-CBxFPcazq-spCtOFreE57JHffGAW35-7OTwb3-K0jhL-SWy51GtJOsjQ6flUdP2Oz-yvOcFzUI3ZKc4Zs9j5EUG2QVfgsNlU2QyutFJNGmVC35nQ2q5N5bjp9CW9Cym1Z32AlraIGIjM"/>
+</div>
+</header>
+<div class="flex">
+<!-- Side Navigation Bar (Desktop) -->
+<aside class="hidden lg:flex flex-col gap-2 p-4 w-[280px] h-[calc(100vh-64px)] bg-surface-container-low border-r border-outline-variant sticky top-16">
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">ড্যাশবোর্ড</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">সদস্য ব্যবস্থাপনা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md">মাসিক জমা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-md text-label-md">বিনিয়োগ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-label-md text-label-md">নোটিশ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">রিপোর্ট</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">সেটিংস</span>
+</a>
+</nav>
+<div class="mt-auto p-4 bg-primary-container/10 rounded-xl">
+<p class="font-label-md text-primary font-bold">সহায়তা প্রয়োজন?</p>
+<p class="text-xs text-on-surface-variant mt-1">আমাদের সাপোর্ট টিমের সাথে যোগাযোগ করুন সরাসরি।</p>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-4 md:p-8 bg-background mb-20 lg:mb-0">
+<div class="max-w-5xl mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">নোটিশ বোর্ড</h1>
+<p class="font-body-md text-on-surface-variant">বন্ধু ফান্ডের সাম্প্রতিক আপডেট এবং গুরুত্বপূর্ণ ঘোষণাগুলি এখানে দেখুন।</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-full font-label-md hover:shadow-lg transition-all active:scale-95 w-fit">
+<span class="material-symbols-outlined">add</span>
+                        নতুন নোটিশ যোগ করুন
+                    </button>
+</div>
+<!-- Featured Notice (Asymmetric Pattern) -->
+<section class="mb-10">
+<div class="relative overflow-hidden rounded-3xl bg-primary-container p-1 min-h-[300px] flex flex-col md:flex-row">
+<div class="flex-1 p-8 flex flex-col justify-center">
+<span class="bg-tertiary-container text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider w-fit mb-4">জরুরী</span>
+<h2 class="font-headline-md text-headline-md text-on-primary-container mb-4">বার্ষিক সাধারণ সভা ২০২৪ এর তারিখ নির্ধারণ</h2>
+<p class="text-on-primary-container/80 mb-6 font-body-md max-w-xl leading-relaxed">
+                                আগামী ১৫ই মে বন্ধু ফান্ডের সকল সদস্যদের উপস্থিতিতে বার্ষিক সাধারণ সভা অনুষ্ঠিত হবে। সভার স্থান এবং বিস্তারিত সময়সূচী এই নোটিশের সাথে সংযুক্ত করা হয়েছে। সকল সদস্যের উপস্থিতি একান্ত কাম্য।
+                            </p>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-on-primary-container/60">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+<span class="text-label-md">২০ এপ্রিল, ২০২৪</span>
+</div>
+<button class="text-on-primary-container font-bold underline decoration-2 underline-offset-4 hover:text-primary transition-colors">বিস্তারিত দেখুন</button>
+</div>
+</div>
+<div class="flex-1 relative hidden md:block min-h-[250px]">
+<img class="absolute inset-0 w-full h-full object-cover rounded-2xl" data-alt="A professional business meeting scene in a high-tech conference room with modern lighting and glass walls. The atmosphere is collaborative and professional, reflecting a high-end corporate setting for a financial fund's annual general meeting. The color palette is dominated by corporate blues and clean whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1m3_-2N4tkRA8cilrPOmFhrXdm-AI8IMRenC3Dgz_POiMN96rgFC79Bk6WAqSBk_xk5s0Mr_ILnwHeDCMmGV-OWV0Z1BbLLVLUQfCChBA6XGtUslSOiCoLcpWFbUl1r69Snrrn36_J4mYPdQqCV0MrsmGjZNi-1oX6bRqnPeQULFl0t5dbUhiGXxXpx50OXyMoF-_ET-tRnxyHH7abCmkdaxkGWmILZxBdHLAhe7YilUMtvysE5dPQDC_L3MKqdarBiSWZiBA2Sc"/>
+</div>
+</div>
+</section>
+<!-- Filter Chips -->
+<div class="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-5 py-2 bg-primary text-on-primary rounded-full text-label-md whitespace-nowrap">সবগুলো</button>
+<button class="px-5 py-2 bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest rounded-full text-label-md transition-colors whitespace-nowrap">সাধারণ</button>
+<button class="px-5 py-2 bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest rounded-full text-label-md transition-colors whitespace-nowrap">বিনিয়োগ</button>
+<button class="px-5 py-2 bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest rounded-full text-label-md transition-colors whitespace-nowrap">সদস্যপদ</button>
+<button class="px-5 py-2 bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest rounded-full text-label-md transition-colors whitespace-nowrap">অন্যান্য</button>
+</div>
+<!-- Notice Grid (Bento Style Variation) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Notice Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/30 hover:shadow-md transition-shadow group relative">
+<div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 bg-surface-container-high rounded-full hover:bg-primary-container hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 bg-surface-container-high rounded-full hover:bg-error-container hover:text-error transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+<div class="mb-4">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-md text-[12px] font-medium">বিনিয়োগ আপডেট</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-2">নতুন প্রোজেক্টে বিনিয়োগ শুরু</h3>
+<p class="text-on-surface-variant font-body-md mb-6 line-clamp-3">আমাদের আবাসন প্রকল্পে নতুন বিনিয়োগের সুযোগ তৈরি হয়েছে। আগ্রহী সদস্যদের নির্ধারিত ফর্ম পূরণের মাধ্যমে আগামী ৩০শে এপ্রিলের মধ্যে আবেদন করতে অনুরোধ করা হচ্ছে।</p>
+<div class="flex items-center justify-between mt-auto border-t border-outline-variant/20 pt-4">
+<div class="flex items-center gap-2 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-label-sm">১৮ এপ্রিল, ২০২৪</span>
+</div>
+<button class="flex items-center gap-1 text-primary font-bold text-label-md hover:gap-2 transition-all">
+                                পড়ুুন <span class="material-symbols-outlined">arrow_right_alt</span>
+</button>
+</div>
+</div>
+<!-- Notice Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/30 hover:shadow-md transition-shadow group relative">
+<div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 bg-surface-container-high rounded-full hover:bg-primary-container hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 bg-surface-container-high rounded-full hover:bg-error-container hover:text-error transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+<div class="mb-4">
+<span class="bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-md text-[12px] font-medium">সাধারণ</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-2">ঈদুল ফিতর উপলক্ষে অফিস ছুটি</h3>
+<p class="text-on-surface-variant font-body-md mb-6 line-clamp-3">আসন্ন ঈদুল ফিতর উপলক্ষে বন্ধু ফান্ডের অফিস আগামী ৯ই এপ্রিল থেকে ১৫ই এপ্রিল পর্যন্ত বন্ধ থাকবে। সকল কার্যক্রম ১৬ই এপ্রিল থেকে পুনরায় শুরু হবে। সবাইকে অগ্রিম ঈদ মোবারক!</p>
+<div class="flex items-center justify-between mt-auto border-t border-outline-variant/20 pt-4">
+<div class="flex items-center gap-2 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-label-sm">১৫ এপ্রিল, ২০২৪</span>
+</div>
+<button class="flex items-center gap-1 text-primary font-bold text-label-md hover:gap-2 transition-all">
+                                পড়ুুন <span class="material-symbols-outlined">arrow_right_alt</span>
+</button>
+</div>
+</div>
+<!-- Notice Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/30 hover:shadow-md transition-shadow group relative">
+<div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 bg-surface-container-high rounded-full hover:bg-primary-container hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 bg-surface-container-high rounded-full hover:bg-error-container hover:text-error transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+<div class="mb-4">
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-3 py-1 rounded-md text-[12px] font-medium">সদস্যপদ</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-2">নতুন সদস্য নিবন্ধনের নিয়মাবলী</h3>
+<p class="text-on-surface-variant font-body-md mb-6 line-clamp-3">এখন থেকে নতুন সদস্যদের জন্য অনলাইন নিবন্ধনের ব্যবস্থা চালু হয়েছে। নিবন্ধনের জন্য প্রয়োজনীয় ডকুমেন্টস এবং ফি সম্পর্কে বিস্তারিত জানতে নিচের বাটনে ক্লিক করুন।</p>
+<div class="flex items-center justify-between mt-auto border-t border-outline-variant/20 pt-4">
+<div class="flex items-center gap-2 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-label-sm">১০ এপ্রিল, ২০২৪</span>
+</div>
+<button class="flex items-center gap-1 text-primary font-bold text-label-md hover:gap-2 transition-all">
+                                পড়ুুন <span class="material-symbols-outlined">arrow_right_alt</span>
+</button>
+</div>
+</div>
+<!-- Notice Card 4 (Glassmorphism highlight) -->
+<div class="glass-card p-6 rounded-2xl shadow-lg border border-primary/10 group relative bg-gradient-to-br from-white to-primary-container/10">
+<div class="absolute top-4 right-4 flex gap-1">
+<button class="p-2 bg-white/50 rounded-full hover:bg-primary-container hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 bg-white/50 rounded-full hover:bg-error-container hover:text-error transition-colors"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+<div class="mb-4 flex items-center gap-2">
+<span class="bg-tertiary-container text-white px-3 py-1 rounded-md text-[12px] font-bold">জরুরী</span>
+<span class="text-tertiary font-bold text-xs animate-pulse">নতুন নোটিশ</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-2">মাসিক জমাদানের শেষ তারিখ পরিবর্তন</h3>
+<p class="text-on-surface-variant font-body-md mb-6 line-clamp-3">সদস্যদের অনুরোধে চলতি মাসের মাসিক জমা দেওয়ার শেষ তারিখ ৫ই মে পর্যন্ত বর্ধিত করা হয়েছে। অতিরিক্ত জরিমানার হাত থেকে বাঁচতে নির্দিষ্ট সময়ের মধ্যে জমা সম্পন্ন করুন।</p>
+<div class="flex items-center justify-between mt-auto border-t border-primary/10 pt-4">
+<div class="flex items-center gap-2 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-label-sm">২৪ এপ্রিল, ২০২৪</span>
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg text-label-sm font-bold shadow-sm hover:shadow-md transition-all active:scale-95">
+                                বিস্তারিত পড়ুন
+                            </button>
+</div>
+</div>
+</div>
+<!-- Load More / Pagination -->
+<div class="mt-12 flex justify-center">
+<button class="px-8 py-3 border border-outline text-on-surface-variant font-label-md rounded-full hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">refresh</span>
+                        আরও লোড করুন
+                    </button>
+</div>
+</div>
+</main>
+</div>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 pb-safe bg-surface shadow-[0_-4px_12px_0_rgba(0,0,0,0.05)] rounded-t-xl border-t border-outline-variant/10">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">ড্যাশবোর্ড</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-sm text-label-sm">জমা</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-sm text-label-sm">বিনিয়োগ</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="font-label-sm text-label-sm">নোটিশ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">প্রোফাইল</span>
+</a>
+</nav>
+<!-- Floating Action Button (Mobile Contextual) -->
+<button class="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<script>
+        // Simple micro-interaction for cards
+        document.querySelectorAll('.bg-surface-container-lowest').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('scale-[1.01]');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('scale-[1.01]');
+            });
+        });
+
+        // Search bar interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20', 'bg-white');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20', 'bg-white');
+        });
+    </script>
+</body></html>

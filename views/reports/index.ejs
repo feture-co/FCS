@@ -1,0 +1,167 @@
+<div class="page-heading">
+  <div>
+    <p>ফান্ডের সামগ্রিক রিপোর্ট ও ফাইল এক্সপোর্ট</p>
+    <h1>রিপোর্ট ও অ্যানালিটিক্স</h1>
+  </div>
+</div>
+
+<!-- KPI Cards Grid -->
+<div class="row g-3 mb-4">
+  <div class="col-md-3 col-sm-6">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 87, 205, 0.1); color: var(--primary);"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+      </div>
+      <span>মোট জমা</span>
+      <strong><%= money(stats.totalDeposit) %></strong>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon danger" style="background: rgba(186, 26, 26, 0.1); color: var(--error);"><span class="material-symbols-outlined">history_toggle_off</span></div>
+      </div>
+      <span>মোট বকেয়া</span>
+      <strong class="text-danger"><%= money(stats.totalDue) %></strong>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(230, 126, 34, 0.1); color: #e67e22;"><span class="material-symbols-outlined">trending_up</span></div>
+      </div>
+      <span>মোট বিনিয়োগ</span>
+      <strong><%= money(stats.totalInvestment) %></strong>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="stat-card">
+      <div class="d-flex justify-content-between align-items-start w-full mb-2">
+        <div class="stat-icon success" style="background: rgba(0, 109, 65, 0.1); color: var(--secondary);"><span class="material-symbols-outlined">payments</span></div>
+      </div>
+      <span>মোট লাভ</span>
+      <strong><%= money(stats.totalProfit) %></strong>
+    </div>
+  </div>
+</div>
+
+<!-- Export Reports Panel -->
+<h2 class="h5 font-bold mb-3" style="font-weight: 800;">রিপোর্ট ফাইল এক্সপোর্ট</h2>
+<div class="row g-3 mb-4">
+  <% [
+      ['members','সদস্য রিপোর্ট', 'group'],
+      ['deposits','জমা রিপোর্ট', 'account_balance_wallet'],
+      ['dues','বকেয়া রিপোর্ট', 'history_toggle_off'],
+      ['investments','বিনিয়োগ রিপোর্ট', 'trending_up'],
+      ['profits','লাভ রিপোর্ট', 'payments']
+     ].forEach(r => { %>
+    <div class="col-md-4 col-sm-6">
+      <div class="panel p-4 h-100 d-flex flex-column justify-content-between">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-primary" style="font-size: 28px;"><%= r[2] %></span>
+          <h3 class="h5 m-0 fw-bold"><%= r[1] %></h3>
+        </div>
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-danger flex-grow-1" href="/reports/<%= r[0] %>/pdf">
+            <span class="material-symbols-outlined" style="font-size: 16px;">picture_as_pdf</span> PDF
+          </a>
+          <a class="btn btn-sm btn-outline-success flex-grow-1" href="/reports/<%= r[0] %>/excel">
+            <span class="material-symbols-outlined" style="font-size: 16px;">description</span> Excel
+          </a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<div class="row g-4 mb-4">
+  <!-- Analytics Chart -->
+  <div class="col-lg-5">
+    <div class="panel h-100 d-flex flex-column justify-content-between">
+      <h2 style="font-size: 18px; font-weight: 800;">ফান্ড ও লভ্যাংশ বণ্টন অ্যানালিটিক্স</h2>
+      <div class="d-flex align-items-center justify-content-center flex-grow-1 py-3">
+        <canvas id="reportsMixChart" style="max-height: 250px; max-width: 250px;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Transactions List -->
+  <div class="col-lg-7">
+    <div class="panel table-panel h-100">
+      <div class="p-4 border-bottom">
+        <h2 class="m-0" style="font-size: 18px; font-weight: 800;">বিস্তারিত লেনদেন খতিয়ান</h2>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr style="background-color: var(--surface-low); color: var(--muted);">
+              <th>তারিখ</th>
+              <th>সদস্য</th>
+              <th>বিবরণ & ধরণ</th>
+              <th class="text-end">পরিমাণ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (transactions.length === 0) { %>
+              <tr>
+                <td colspan="4" class="text-center py-4 text-muted">কোনো লেনদেন পাওয়া যায়নি।</td>
+              </tr>
+            <% } %>
+            <% transactions.forEach(t => { %>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td><%= t.transactionDate ? new Date(t.transactionDate).toLocaleDateString('bn-BD', { day: 'numeric', month: 'short', year: 'numeric' }) : '---' %></td>
+                <td><strong><%= t.Member ? t.Member.name : 'ফান্ড' %></strong></td>
+                <td>
+                  <div class="fw-bold" style="font-size: 13px;"><%= t.description || t.type %></div>
+                  <span class="status-pill <%= t.debit > 0 ? 'due' : 'paid' %>" style="font-size: 9px; padding: 2px 6px;"><%= t.type %></span>
+                </td>
+                <td class="text-end fw-bold <%= t.debit > 0 ? 'text-danger' : 'text-success' %>">
+                  <%= t.debit > 0 ? money(t.debit) : money(t.credit) %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('reportsMixChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['মোট জমা', 'মোট বিনিয়োগ', 'মোট লাভ', 'মোট বকেয়া'],
+        datasets: [{
+          data: [
+            <%= stats.totalDeposit %>, 
+            <%= stats.totalInvestment %>, 
+            <%= stats.totalProfit %>, 
+            <%= stats.totalDue %>
+          ],
+          backgroundColor: ['#0d6efd', '#e67e22', '#198754', '#dc3545'],
+          borderWidth: 2,
+          borderColor: 'var(--surface-card)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              font: {
+                family: 'Noto Sans Bengali',
+                size: 11
+              },
+              color: 'var(--text)'
+            }
+          }
+        }
+      }
+    });
+  });
+</script>

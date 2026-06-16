@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>সদস্য যোগ করুন - বন্ধু ফান্ড</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdad9",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2d3135",
+                    "on-secondary-fixed": "#002110",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e8",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e0e3e8",
+                    "tertiary-fixed-dim": "#ffb3b2",
+                    "primary-fixed": "#dae2ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#92001f",
+                    "primary": "#0057cd",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d7dadf",
+                    "background": "#f7f9ff",
+                    "tertiary-container": "#dd3645",
+                    "outline-variant": "#c2c6d8",
+                    "surface-container-low": "#f1f4f9",
+                    "on-surface": "#181c20",
+                    "on-tertiary-fixed": "#410008",
+                    "inverse-primary": "#b1c5ff",
+                    "surface-container-high": "#e5e8ee",
+                    "tertiary": "#b91830",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#93f7ba",
+                    "secondary-fixed-dim": "#77da9f",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "surface-tint": "#0057ce",
+                    "outline": "#727787",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed": "#001946",
+                    "on-primary-fixed-variant": "#00419e",
+                    "inverse-on-surface": "#eef1f6",
+                    "on-primary-container": "#ffffff",
+                    "surface-container": "#ebeef3",
+                    "secondary-container": "#90f4b7",
+                    "on-secondary-fixed-variant": "#00522f",
+                    "on-secondary-container": "#007144",
+                    "primary-container": "#0d6efd",
+                    "secondary": "#006d41",
+                    "on-tertiary-container": "#130001",
+                    "on-surface-variant": "#424655",
+                    "on-background": "#181c20"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "card-gap": "24px",
+                    "container-padding-desktop": "32px",
+                    "gutter": "24px",
+                    "container-padding-mobile": "16px",
+                    "sidebar-width": "280px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Noto Sans Bengali"],
+                    "label-sm": ["Noto Sans Bengali"],
+                    "label-md": ["Noto Sans Bengali"],
+                    "display-lg": ["Noto Sans Bengali"],
+                    "title-lg": ["Noto Sans Bengali"],
+                    "headline-md": ["Noto Sans Bengali"],
+                    "headline-lg-mobile": ["Noto Sans Bengali"],
+                    "body-md": ["Noto Sans Bengali"],
+                    "headline-lg": ["Noto Sans Bengali"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "display-lg": ["40px", {"lineHeight": "52px", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background-color: #f7f9ff;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .step-active {
+            @apply border-primary text-primary;
+        }
+        .step-inactive {
+            @apply border-outline-variant text-on-surface-variant;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 87, 205, 0.2);
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<div class="flex min-h-screen">
+<!-- Side Navigation (Web Only) -->
+<aside class="hidden lg:flex flex-col gap-unit p-4 w-sidebar-width h-screen sticky top-0 bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined">group</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">বন্ধু ফান্ড</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">সঞ্চয় ও বিনিয়োগ</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">ড্যাশবোর্ড</span>
+</a>
+<a class="flex items-center gap-3 p-3 bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">সদস্য ব্যবস্থাপনা</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-md text-label-md">মাসিক জমা</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">history_toggle_off</span>
+<span class="font-label-md text-label-md">বকেয়া</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-md text-label-md">বিনিয়োগ</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md text-label-md">লাভ ব্যবস্থাপনা</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">campaign</span>
+<span class="font-label-md text-label-md">নোটিশ</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-label-md text-label-md">রিপোর্ট</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">সেটিংস</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-x-hidden">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-container-padding-mobile md:px-container-padding-desktop py-unit h-16 bg-surface dark:bg-surface-dim shadow-sm sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<button class="lg:hidden p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md font-bold text-primary">নতুন সদস্য যুক্ত করুন</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<img alt="ইউজার প্রোফাইল" class="w-8 h-8 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuARkiGuOcvjnlu6QzNfRutMWhy4fg2ol6rDaH60wB4dK4t_WG-OYK3LzRneYoeTuulN_ZvZi8UFx4EDOYoY3TS-Bw5aGkbUpqmmCL2R4B1qXOLsbXrW14PFkRmqfoq0cDcgtoTp3xQgpyH-jbPm2Y4gHtfBCSz0AFmBtWhkXGfuNpFRzkFZjGSmHhl-H7Xn0BCcCU3MoOMCF2ikmUEp6K0lFxVTLm8TrSZjdWf8sjFMwWUVGat_YaU_Q4VkIfTSOor7bealdmkJIoo"/>
+</div>
+</header>
+<div class="max-w-4xl mx-auto px-container-padding-mobile md:px-container-padding-desktop py-8 mb-24">
+<!-- Progress Indicator -->
+<div class="mb-12">
+<div class="flex items-center justify-between relative max-w-2xl mx-auto">
+<div class="absolute top-5 left-0 w-full h-0.5 bg-surface-container-highest -z-10"></div>
+<div class="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500 -z-10" id="progress-line" style="width: 0%;"></div>
+<!-- Step 1 -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full border-2 bg-surface flex items-center justify-center font-bold step-active transition-colors" id="step-circle-1">১</div>
+<span class="font-label-sm text-label-sm">ব্যক্তিগত তথ্য</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full border-2 bg-surface flex items-center justify-center font-bold step-inactive transition-colors" id="step-circle-2">২</div>
+<span class="font-label-sm text-label-sm">ফান্ড তথ্য</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-2">
+<div class="w-10 h-10 rounded-full border-2 bg-surface flex items-center justify-center font-bold step-inactive transition-colors" id="step-circle-3">৩</div>
+<span class="font-label-sm text-label-sm">ছবি আপলোড</span>
+</div>
+</div>
+</div>
+<!-- Form Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-lg p-6 md:p-10 transition-all duration-300">
+<form id="multiStepForm">
+<!-- Section 1: Personal Info -->
+<div class="space-y-6" id="section-1">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="font-title-lg text-title-lg">ব্যক্তিগত তথ্য</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="space-y-2">
+<label class="font-label-md text-label-md block text-on-surface-variant">সদস্যের নাম</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-3 text-body-md focus:border-primary transition-all" placeholder="যেমন: আব্দুল করিম" required="" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md block text-on-surface-variant">মোবাইল নম্বর</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-3 text-body-md focus:border-primary transition-all" placeholder="০১৭XXXXXXXX" required="" type="tel"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md block text-on-surface-variant">ইমেইল ঠিকানা</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-3 text-body-md focus:border-primary transition-all" placeholder="example@mail.com" type="email"/>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="font-label-md text-label-md block text-on-surface-variant">বর্তমান ঠিকানা</label>
+<textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-3 text-body-md focus:border-primary transition-all" placeholder="বাড়ি নং, রাস্তা, এলাকা, শহর..." rows="3"></textarea>
+</div>
+</div>
+</div>
+<!-- Section 2: Fund Info -->
+<div class="hidden space-y-6 animate-fade-in" id="section-2">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+<h3 class="font-title-lg text-title-lg">ফান্ড সংক্রান্ত তথ্য</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="space-y-2">
+<label class="font-label-md text-label-md block text-on-surface-variant">মাসিক জমার পরিমাণ (টাকা)</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-3 pl-10 text-body-md focus:border-primary transition-all" placeholder="৫০০" required="" type="number"/>
+<span class="absolute left-3 top-3.5 text-on-surface-variant font-bold">৳</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md block text-on-surface-variant">শেয়ার সংখ্যা</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-3 text-body-md focus:border-primary transition-all" placeholder="১" required="" type="number"/>
+</div>
+<div class="p-4 bg-primary-container/10 border border-primary-container rounded-lg md:col-span-2 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-label-md text-label-md text-on-primary-fixed-variant">প্রতিটি শেয়ারের মূল্য এবং জমার তারিখ ফান্ডের সাধারণ নীতি অনুযায়ী স্বয়ংক্রিয়ভাবে নির্ধারিত হবে।</p>
+</div>
+</div>
+</div>
+<!-- Section 3: Photo Upload -->
+<div class="hidden space-y-6 animate-fade-in" id="section-3">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">add_a_photo</span>
+<h3 class="font-title-lg text-title-lg">প্রোফাইল ছবি আপলোড</h3>
+</div>
+<div class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-outline-variant rounded-xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer" id="drop-zone">
+<div class="w-24 h-24 bg-surface-container-highest rounded-full flex items-center justify-center mb-4 overflow-hidden group">
+<img alt="প্রিভিউ" class="w-full h-full object-cover hidden" id="preview-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkKzFsDX9-7zKtC9vEr7GnFjSX1f-JhBuXCPyifgZv913zMwpMAKdhsGWfYhWM0DpXPeigb8dz_QWnB4OLhin-Mti9R7pXusgQhLMQUycquZuI2onkfi3LIFckGUPDPMHcZP0A9_t3qMDIZCqVAFu37eBRNIZmGpZwCXRzgon6hMYs9OSgggUWAF82jq8N-rahc8sE-lIMX-e6sgKKE7_XLhdFhFnI6NB5OFHVAVBUhvs2kBKxb_otjzy4XrwXX49fVpCoJEIjZro"/>
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:scale-110 transition-transform" id="upload-icon">cloud_upload</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-bold">ছবি নির্বাচন করতে এখানে ক্লিক করুন</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">PNG, JPG অথবা JPEG (সর্বোচ্চ ২ মেগাবাইট)</p>
+<input accept="image/*" class="hidden" id="file-input" type="file"/>
+</div>
+</div>
+<!-- Form Actions -->
+<div class="flex items-center justify-between mt-12 pt-6 border-t border-outline-variant">
+<button class="hidden flex items-center gap-2 px-6 py-2.5 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors" id="prev-btn" type="button">
+<span class="material-symbols-outlined">arrow_back</span>
+                                পূর্ববর্তী
+                            </button>
+<div class="flex gap-4 ml-auto">
+<button class="px-6 py-2.5 rounded-lg font-label-md text-label-md border border-outline-variant text-on-surface hover:bg-surface-container-high transition-colors" type="button">বাতিল করুন</button>
+<button class="flex items-center gap-2 px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-md hover:bg-primary-container transition-all active:scale-95" id="next-btn" type="button">
+                                    পরবর্তী
+                                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="hidden flex items-center gap-2 px-8 py-2.5 bg-primary text-on-primary rounded-lg font-label-md text-label-md shadow-md hover:bg-primary-container transition-all active:scale-95" id="save-btn" type="submit">
+                                    সংরক্ষণ করুন
+                                    <span class="material-symbols-outlined">check_circle</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 pb-safe bg-surface dark:bg-surface-container-lowest shadow-[0_-4px_12px_0_rgba(0,0,0,0.05)] rounded-t-xl border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">ড্যাশবোর্ড</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-sm text-label-sm">সদস্য</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-sm text-label-sm">জমা</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-sm text-label-sm">বিনিয়োগ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">প্রোফাইল</span>
+</a>
+</nav>
+</div>
+<script>
+        const sections = ['section-1', 'section-2', 'section-3'];
+        let currentStep = 0;
+
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const progressLine = document.getElementById('progress-line');
+
+        function updateStep() {
+            sections.forEach((id, index) => {
+                const element = document.getElementById(id);
+                const circle = document.getElementById(`step-circle-${index + 1}`);
+                
+                if (index === currentStep) {
+                    element.classList.remove('hidden');
+                    circle.classList.add('step-active');
+                    circle.classList.remove('step-inactive');
+                } else {
+                    element.classList.add('hidden');
+                    if (index < currentStep) {
+                        circle.classList.add('step-active');
+                        circle.classList.remove('step-inactive');
+                    } else {
+                        circle.classList.add('step-inactive');
+                        circle.classList.remove('step-active');
+                    }
+                }
+            });
+
+            // Update progress line
+            const progress = (currentStep / (sections.length - 1)) * 100;
+            progressLine.style.width = `${progress}%`;
+
+            // Button visibility
+            prevBtn.classList.toggle('hidden', currentStep === 0);
+            if (currentStep === sections.length - 1) {
+                nextBtn.classList.add('hidden');
+                saveBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                saveBtn.classList.add('hidden');
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < sections.length - 1) {
+                currentStep++;
+                updateStep();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateStep();
+            }
+        });
+
+        // Image Upload Logic
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewImage = document.getElementById('preview-image');
+        const uploadIcon = document.getElementById('upload-icon');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove('hidden');
+                    uploadIcon.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop effects
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.add('bg-primary-container/20', 'border-primary');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('bg-primary-container/20', 'border-primary');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                fileInput.files = e.dataTransfer.files;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove('hidden');
+                    uploadIcon.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('multiStepForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('সদস্য সফলভাবে যুক্ত করা হয়েছে!');
+            // Reset logic or redirect would go here
+        });
+    </script>
+</body></html>

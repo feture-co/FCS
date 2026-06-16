@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="light" lang="bn"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>সদস্য তালিকা - বন্ধু ফান্ড</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdad9",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#2d3135",
+                    "on-secondary-fixed": "#002110",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e8",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e0e3e8",
+                    "tertiary-fixed-dim": "#ffb3b2",
+                    "primary-fixed": "#dae2ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#92001f",
+                    "primary": "#0057cd",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d7dadf",
+                    "background": "#f7f9ff",
+                    "tertiary-container": "#dd3645",
+                    "outline-variant": "#c2c6d8",
+                    "surface-container-low": "#f1f4f9",
+                    "on-surface": "#181c20",
+                    "on-tertiary-fixed": "#410008",
+                    "inverse-primary": "#b1c5ff",
+                    "surface-container-high": "#e5e8ee",
+                    "tertiary": "#b91830",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#93f7ba",
+                    "secondary-fixed-dim": "#77da9f",
+                    "on-primary": "#ffffff",
+                    "surface-bright": "#f7f9ff",
+                    "primary-fixed-dim": "#b1c5ff",
+                    "surface-tint": "#0057ce",
+                    "outline": "#727787",
+                    "surface": "#f7f9ff",
+                    "on-primary-fixed": "#001946",
+                    "on-primary-fixed-variant": "#00419e",
+                    "inverse-on-surface": "#eef1f6",
+                    "on-primary-container": "#ffffff",
+                    "surface-container": "#ebeef3",
+                    "secondary-container": "#90f4b7",
+                    "on-secondary-fixed-variant": "#00522f",
+                    "on-secondary-container": "#007144",
+                    "primary-container": "#0d6efd",
+                    "secondary": "#006d41",
+                    "on-tertiary-container": "#130001",
+                    "on-surface-variant": "#424655",
+                    "on-background": "#181c20"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "card-gap": "24px",
+                    "container-padding-desktop": "32px",
+                    "gutter": "24px",
+                    "container-padding-mobile": "16px",
+                    "sidebar-width": "280px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Noto Sans Bengali"],
+                    "label-sm": ["Noto Sans Bengali"],
+                    "label-md": ["Noto Sans Bengali"],
+                    "display-lg": ["Noto Sans Bengali"],
+                    "title-lg": ["Noto Sans Bengali"],
+                    "headline-md": ["Noto Sans Bengali"],
+                    "headline-lg-mobile": ["Noto Sans Bengali"],
+                    "body-md": ["Noto Sans Bengali"],
+                    "headline-lg": ["Noto Sans Bengali"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "display-lg": ["40px", {"lineHeight": "52px", "fontWeight": "700"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Noto Sans Bengali', sans-serif; background-color: #f7f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-effect { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(15px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c2c6d8; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Layout Container -->
+<div class="flex min-h-screen">
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden lg:flex flex-col gap-unit p-4 w-sidebar-width h-screen bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant fixed left-0 top-0 z-40">
+<div class="flex items-center gap-3 px-2 py-4 mb-6">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">বন্ধু ফান্ড</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">সঞ্চয় ও বিনিয়োগ</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1 overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">ড্যাশবোর্ড</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-md text-label-md">সদস্য ব্যবস্থাপনা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-md text-label-md">মাসিক জমা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="history_toggle_off">history_toggle_off</span>
+<span class="font-label-md text-label-md">বকেয়া</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-label-md text-label-md">বিনিয়োগ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">লাভ ব্যবস্থাপনা</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+<span class="font-label-md text-label-md">নোটিশ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-label-md text-label-md">রিপোর্ট</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">সেটিংস</span>
+</a>
+</nav>
+<div class="mt-auto pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-3 px-2 py-2">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A portrait of a smiling middle-aged South Asian businessman in a professional white shirt, set against a blurred office background with warm, natural lighting. The image captures a sense of approachability and expertise, fitting a premium fintech platform's user profile aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzPnzl00OITRvI9LqQlTyNlGqk2bLR1EJUZmYo4FWBLW9wohubt76U22wcwHbRmhQIXkv5-GtTxoBPyTl22aB7ZBkSA9-4unkEvz4jY5HTiEIDCq-YQ9bD5UPKLhv85HhPhVOFaeXn1VWN1mJUDmhkZg1BHd9fTBHXt__xWtl3KqkmLrcFRBOnLybMcTIR5jKUmPAkDhbFjY6IvuFKz6Ot8ozkEjoHaoB71sGfuSdTrzlwWcdAfdJq0JmK55a0PdYW_v1NXxsN3vs"/>
+<div class="overflow-hidden">
+<p class="font-label-md text-label-md font-bold truncate">আরিফুল ইসলাম</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">অ্যাডমিন প্যানেল</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-sidebar-width flex flex-col min-h-screen relative bg-background">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-container-padding-mobile md:px-container-padding-desktop py-unit h-16 bg-surface dark:bg-surface-dim shadow-sm sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<button class="lg:hidden p-2 hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="hidden md:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 border border-outline-variant focus-within:border-primary transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md font-label-md w-64 placeholder:text-outline" placeholder="সদস্য খুঁজুন..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-full relative active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<img class="w-8 h-8 rounded-full border border-outline-variant object-cover cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all" data-alt="A professional headshot of a Bengali corporate male, wearing a light blue dress shirt, looking confidently into the camera. The background is a minimalist, brightly lit studio environment that conveys a modern and clean professional vibe consistent with a financial dashboard interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtK-plVz1AecGqpdE4P4xwlkQVJ_2iea9fLQRi_YA3TqMU4mS2pbpGJPY5PMZUd8Cb2YvSIRp3UyQ_uqH_gTHJwEg2aE1ADQVChRxYUZ0xhtoJAyB5h8M47mix9UtBDYingU3Ons930JmamHt43nw2YVd43wHwW4tj9MNBKIbMLKWDwMRH65oBee8hLygzsr6W3O4PXjYYSm4IQBcznhZXHc6yob0P1XvB8PE2Qg8JPFXZ_OjT_3ip0ZLGoMll1_4NmY7XaJHiMB4"/>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-container-padding-mobile md:p-container-padding-desktop flex flex-col gap-card-gap">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">সদস্য তালিকা</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">মোট ১৭৫ জন সক্রিয় সদস্য নিবন্ধিত আছেন</p>
+</div>
+<button class="flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-container hover:text-on-primary-container transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+<span class="font-label-md text-label-md">+ নতুন সদস্য</span>
+</button>
+</div>
+<!-- Filters Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-outline-variant/30">
+<div class="md:col-span-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">স্থিতি ফিল্টার</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 font-label-md text-label-md focus:ring-primary focus:border-primary">
+<option>সকল সদস্য</option>
+<option>সক্রিয়</option>
+<option>নিষ্ক্রিয়</option>
+</select>
+</div>
+<div class="md:col-span-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant mb-1 block">শেয়ার সংখ্যা</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg px-3 py-2 font-label-md text-label-md focus:ring-primary focus:border-primary">
+<option>যেকোনো</option>
+<option>১-৫ টি</option>
+<option>৫+ টি</option>
+</select>
+</div>
+<div class="md:col-span-2 flex items-end">
+<div class="w-full relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg font-label-md text-label-md focus:ring-primary focus:border-primary" placeholder="নাম, আইডি বা মোবাইল নম্বর দিয়ে খুঁজুন..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Data Table Card -->
+<div class="bg-white rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">ছবি</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">সদস্য আইডি</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">নাম</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">মোবাইল</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">শেয়ার</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">মোট জমা</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">বকেয়া</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-center">স্ট্যাটাস</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-center">অ্যাকশন</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A close-up professional headshot of a friendly young adult male with short dark hair and a neat beard, wearing a casual polo shirt. The lighting is soft and bright, set against a neutral, high-key studio background that emphasizes a clean and trustworthy user identity for a fintech portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpWD_dV4UfTiVK0_Ya0IHqSfo7yyP_zK51_Uagf1PmKbT1PaEOwwh4qhTW2mrFJ-1ei0Jn8W9rpfNV_IOsig1U7yvqLArIR7me7FJp7GiIsAz-s7Dp5U6BCEgrXLJauDJ_zOtSxrVkE-1egxPSYgWoEmWkWN_HxGlns_MmNf4DeTTScxKZFFZKTU-ubSZUtYKlQp9sjbkaVXLUNNCXs1vxkU2xFWdtcn0m6weCjvQTLu-Pc-DvE2uIwAwYhamTH8blLH6bNUewWA0"/>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md font-bold text-primary">BF-2024-001</td>
+<td class="px-6 py-4 font-body-md text-body-md font-semibold">কামরুল হাসান</td>
+<td class="px-6 py-4 font-body-md text-body-md">০১৭০০-০০০০০১</td>
+<td class="px-6 py-4 font-body-md text-body-md">০৫ টি</td>
+<td class="px-6 py-4 font-body-md text-body-md text-right font-bold text-secondary">৳ ১২,৫০০</td>
+<td class="px-6 py-4 font-body-md text-body-md text-right text-error font-semibold">৳ ০</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-bold">সক্রিয়</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<button class="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors" title="দেখুন">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 hover:bg-secondary/10 text-secondary rounded-lg transition-colors" title="সম্পাদনা">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 hover:bg-error/10 text-error rounded-lg transition-colors" title="মুছে ফেলুন">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A portrait of a young South Asian woman in professional attire, featuring a warm and confident smile. The setting is a modern, sunlit creative office with soft bokeh in the background, reinforcing a professional yet friendly atmosphere for a digital financial management system." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC38OPHbdX62vrpvrOSIfhn6vaCri4lYyt65ieNxbGw195W-eUhvUPjT6dUrKQ3y34n__KliebdQX4ymKQyNkY2X7mPpPPPrxpvGEtdQy1v-uJg5nw8Tf96BgFCseAC-Hbzt45nPr5lAJgn5nLBlbq8A2dQ458ud3cfqUrDha9roEafhpwFU7ylAHZSeOaczfPsR1DBKblUslypOgA5zwzgoXcALK0MiEdPW3yoMKyB6XHh79aj4TOwQopX1CJT5ksn1H_o4dMY-sQ"/>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md font-bold text-primary">BF-2024-042</td>
+<td class="px-6 py-4 font-body-md text-body-md font-semibold">মালিহা আক্তার</td>
+<td class="px-6 py-4 font-body-md text-body-md">০১৭০০-০০০০০২</td>
+<td class="px-6 py-4 font-body-md text-body-md">০২ টি</td>
+<td class="px-6 py-4 font-body-md text-body-md text-right font-bold text-secondary">৳ ৪,২০০</td>
+<td class="px-6 py-4 font-body-md text-body-md text-right text-error font-semibold">৳ ৫০০</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-bold">সক্রিয়</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<button class="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 hover:bg-secondary/10 text-secondary rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 hover:bg-error/10 text-error rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="A portrait of a male professional in his late 30s, looking focused and calm. He is wearing a dark grey blazer over a casual t-shirt, set against a bright, minimalist architecture background with geometric shadows. The high-contrast but clean lighting style aligns with a premium SaaS data table aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuLtEGbRR5CakOUZOp2-7D9onjAENLxf-5V8TBBmkubYMEZCAvY82FzvNfqwlX1A3ULwMZNtAuGAFxXaYmlycxm_eH48X19iEpHXRTmgiIuoGQQS2cZazSyoes0Mqb4C3DYrP6U0OSDmxBLYtaej1q3mbrWiRP1Zc3we_Nk3tCUZnbk3Ma_gGYgGqzzQZHwK8jeS9v7fWCN35kEFEjY3EOKzToqxtL61sOZJg6MvHTRFDC54RE3g5GoZjR7EdBVCTR15wBFHkQrQg"/>
+</td>
+<td class="px-6 py-4 font-body-md text-body-md font-bold text-primary">BF-2024-০৮৫</td>
+<td class="px-6 py-4 font-body-md text-body-md font-semibold">জাহিদুল ইসলাম</td>
+<td class="px-6 py-4 font-body-md text-body-md">০১৭০০-০০০০০৩</td>
+<td class="px-6 py-4 font-body-md text-body-md">০৩ টি</td>
+<td class="px-6 py-4 font-body-md text-body-md text-right font-bold text-secondary">৳ ৮,০০০</td>
+<td class="px-6 py-4 font-body-md text-body-md text-right text-error font-semibold">৳ ০</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-error-container text-on-error-container text-label-sm font-bold">নিষ্ক্রিয়</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center justify-center gap-2">
+<button class="p-2 hover:bg-primary/10 text-primary rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+<button class="p-2 hover:bg-secondary/10 text-secondary rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+<button class="p-2 hover:bg-error/10 text-error rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">১ - ১০ (মোট ১৭৫)</span>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary rounded-lg font-label-md text-label-md">১</button>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-high rounded-lg font-label-md text-label-md">২</button>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-high rounded-lg font-label-md text-label-md">৩</button>
+<span class="mx-1">...</span>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-high rounded-lg font-label-md text-label-md">১৮</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2 pb-safe bg-surface dark:bg-surface-container-lowest shadow-[0_-4px_12px_0_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container-highest transition-colors scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">ড্যাশবোর্ড</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-sm text-label-sm">সদস্য</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container-highest transition-colors scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-sm text-label-sm">জমা</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container-highest transition-colors scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-sm text-label-sm">স্টেটমেন্ট</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:bg-surface-container-highest transition-colors scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">প্রোফাইল</span>
+</a>
+</nav>
+</main>
+</div>
+<script>
+        // Simple micro-interactions for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.95)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = 'scale(1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Search Input Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        if(searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.parentElement.classList.add('ring-2', 'ring-primary/20', 'border-primary');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20', 'border-primary');
+            });
+        }
+    </script>
+</body></html>
